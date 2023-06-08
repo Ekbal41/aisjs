@@ -5,7 +5,6 @@ const aisRegistersHandler = (context, next) => {
 
   //Registering assets folder
   let __dirname = process.cwd();
-  console.log(context.request.url);
   let assetsFolder = ais.assetsFolder;
   if (assetsFolder.startsWith("/")) {
   } else {

@@ -1,11 +1,10 @@
 const http = require("http");
 const aisLogger = require("../plugins/aisLogger");
 const aisParamsAndQueryParser = require("../plugins/aisParamsAndQueryParser");
-const aisUrlParserAndResponseSender = require("../plugins/aisUrlParserAndResponseSender");
+const aisResponseSender = require("../plugins/aisResponseSender");
 const aisCustomResponse = require("../plugins/aisCustomResponse");
 const aisRegistersHandler = require("../plugins/aisRegistersHandler");
-
-class Ais {
+class Aiszo {
   constructor() {
     this.server = http.createServer(this.handleRequest.bind(this));
     this.httpRequests = [];
@@ -14,6 +13,10 @@ class Ais {
     this.viewEngine = null;
     this.assetsFolder = null;
   }
+  /**
+   * Register plugins to be used by the server.
+   * @param {Array|object} plugins - An array or single plugin to register.
+   */
   registerPlugins(plugins) {
     if (Array.isArray(plugins)) {
       this.plugins.push(...plugins);
@@ -21,17 +24,23 @@ class Ais {
       this.plugins.push(plugins);
     }
   }
-
+  /**
+   * Register the default plugins.
+   */
   defaultPlugins() {
     this.registerPlugins([
       aisLogger,
       aisCustomResponse,
       aisParamsAndQueryParser,
       aisRegistersHandler,
-      aisUrlParserAndResponseSender, // always leve this at the end
+      aisResponseSender, // always leve this at the end
     ]);
   }
-
+  /**
+   * Register a specific plugin by name.
+   * @param {string} pluginName - The name of the plugin.
+   * @param {object} plugin - The plugin object.
+   */
   register(pluginName, plugin) {
     switch (pluginName) {
       case "viewEngine":
@@ -45,6 +54,11 @@ class Ais {
         throw new Error(`Unknown plugin name: ${pluginName}`);
     }
   }
+  /**
+   * Handle incoming HTTP requests.
+   * @param {http.IncomingMessage} request - The incoming request object.
+   * @param {http.ServerResponse} response - The server response object.
+   */
   async handleRequest(request, response) {
     const context = {
       request,
@@ -54,7 +68,10 @@ class Ais {
       routes: this.httpRequests,
       routeMatched: false,
     };
-
+    /**
+     * Call the next plugin in the chain.
+     * @param {boolean} shouldSkip - Flag to skip the current plugin.
+     */
     const next = async (shouldSkip = false) => {
       const plugin = this.plugins[context.index];
       if (plugin) {
@@ -80,7 +97,13 @@ class Ais {
       response.end("Internal Server Error");
     }
   }
-
+  /**
+   * Register a route with a callback function.
+   * @param {string} pathname - The pathname of the route.
+   * @param {string} method - The HTTP method of the route.
+   * @param {string} path - The path of the route.
+   * @param {function} callback - The callback function to be executed.
+   */
   route(pathname, method, path, callback) {
     this.httpRequests.push({
       pathname,
@@ -89,7 +112,11 @@ class Ais {
       callback,
     });
   }
-
+  /**
+   * Register multiple routes with a common prefix.
+   * @param {Array} routes - An array of route configurations.
+   * @param {string} prefix - The common prefix for the routes.
+   */
   registerRoutes(routes, prefix) {
     let prefixedPath;
     for (const route of routes) {
@@ -101,6 +128,10 @@ class Ais {
       this.route(pathname, method, prefixedPath, callback);
     }
   }
+  /**
+   * Register the view engine plugin.
+   * @param {object} plugin - The view engine plugin configuration.
+   */
   registerViewEngine(plugin) {
     const { name, engine, config } = plugin;
 
@@ -116,7 +147,10 @@ class Ais {
       config,
     };
   }
-
+  /**
+   * Register the assets folder plugin.
+   * @param {object} plugin - The assets folder plugin configuration.
+   */
   registerAssetsFolder(plugin) {
     const { path } = plugin;
 
@@ -128,11 +162,19 @@ class Ais {
 
     this.assetsFolder = path;
   }
-
+  /**
+   * Register a GET route with a callback function.
+   * @param {string} pathname - The pathname of the route.
+   * @param {string} path - The path of the route.
+   * @param {function} callback - The callback function to be executed.
+   */
   get(pathname, path, callback) {
     this.route(pathname, "GET", path, callback);
   }
-
+  /**
+   * Start the server and listen on the specified port.
+   * @param {number} port - The port number to listen on.
+   */
   start(port) {
     this.server.listen(port, () => {
       console.log(
@@ -142,4 +184,4 @@ class Ais {
   }
 }
 
-module.exports = Ais;
+module.exports = Aiszo;

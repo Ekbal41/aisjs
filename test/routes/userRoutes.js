@@ -4,7 +4,11 @@ const userRoutes = [
     method: "GET",
     path: "/",
     callback: (request, response) => {
-      response.render("./views/welcome.html", {});
+      response.render("./views/welcome.html", {
+        title: "Welcome to Aiszo",
+        message: "Welcome to Aiszo",
+        version: "1.0.0",
+      });
     },
   },
   {

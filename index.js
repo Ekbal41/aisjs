@@ -1,2 +1,2 @@
-const Ais = require("./core/ais");
-module.exports = Ais;
+const Aiszo = require("./core/aiszo");
+module.exports = Aiszo;
