@@ -10,5 +10,9 @@
     "ais"
   ],
   "author": "Asif Ekbal",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^5.2.0",
+    "colorette": "^2.0.20"
+  }
 }
