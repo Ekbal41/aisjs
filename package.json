@@ -1,18 +1,35 @@
 {
-  "name": "ais",
-  "version": "1.0.0",
+  "name": "aiszo",
+  "version": "1.0.1",
+  "files": [
+    "README.md",
+    "index.js",
+    "core/ais.js",
+    "plugins/*.js"
+  ],
   "description": "A node js framework",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "ais"
+    "ais",
+    "framework",
+    "web",
+    "http",
+    "rest",
+    "restful",
+    "router",
+    "app",
+    "api"
   ],
-  "author": "Asif Ekbal",
-  "license": "ISC",
+  "author": "Asif Ekbal (https://asifekbal.vercel.app)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ekbal41/aisjs.git"
+  },
+  "license": "MIT",
   "dependencies": {
-    "chalk": "^5.2.0",
     "colorette": "^2.0.20"
   }
 }

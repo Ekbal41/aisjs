@@ -4,7 +4,7 @@ const userRoutes = [
     method: "GET",
     path: "/",
     callback: (request, response) => {
-      response.end("Hello from Ais");
+      response.render("./views/welcome.html", {});
     },
   },
   {
@@ -16,6 +16,5 @@ const userRoutes = [
     },
   },
 ];
-
 
 module.exports = userRoutes;
