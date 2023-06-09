@@ -1,4 +1,5 @@
 const http = require("http");
+const { cyan, red, magenta } = require("colorette");
 const aisLogger = require("../plugins/aisLogger");
 const aisParamsAndQueryParser = require("../plugins/aisParamsAndQueryParser");
 const aisResponseSender = require("../plugins/aisResponseSender");
@@ -12,6 +13,7 @@ class Aiszo {
     this.defaultPlugins();
     this.viewEngine = null;
     this.assetsFolder = null;
+    this.onAssetsCallback = null;
   }
   /**
    * Register plugins to be used by the server.
@@ -29,11 +31,26 @@ class Aiszo {
    */
   defaultPlugins() {
     this.registerPlugins([
-      aisLogger,
-      aisCustomResponse,
-      aisParamsAndQueryParser,
-      aisRegistersHandler,
-      aisResponseSender, // always leve this at the end
+      {
+        name: "aisLogger",
+        body: aisLogger,
+      },
+      {
+        name: "aisCustomResponse",
+        body: aisCustomResponse,
+      },
+      {
+        name: "aisRegistersHandler",
+        body: aisRegistersHandler,
+      },
+      {
+        name: "aisParamsAndQueryParser",
+        body: aisParamsAndQueryParser,
+      },
+      {
+        name: "aisResponseSender",
+        body: aisResponseSender, // always leve this at the end
+      },
     ]);
   }
   /**
@@ -56,45 +73,28 @@ class Aiszo {
   }
   /**
    * Handle incoming HTTP requests.
-   * @param {http.IncomingMessage} request - The incoming request object.
-   * @param {http.ServerResponse} response - The server response object.
+   * @param {http.IncomingMessage} req - The incoming req object.
+   * @param {http.ServerResponse} res - The server res object.
    */
-  async handleRequest(request, response) {
-    const context = {
-      request,
-      response,
-      ais: this,
+  async handleRequest(req, res) {
+    const ctx = {
+      req,
+      res,
+      self: this,
       index: 0,
-      routes: this.httpRequests,
+      aiszo: {},
       routeMatched: false,
+      currentRoute: null,
+      currentAssetsRoute: null,
     };
-    /**
-     * Call the next plugin in the chain.
-     * @param {boolean} shouldSkip - Flag to skip the current plugin.
-     */
-    const next = async (shouldSkip = false) => {
-      const plugin = this.plugins[context.index];
-      if (plugin) {
-        context.index++;
-        if (context.index === this.plugins.length) {
-          await plugin(context, next);
-        }
-        if (shouldSkip) {
-          if (context.index !== this.plugins.length) {
-          }
-          await next(shouldSkip);
-        } else {
-          await plugin(context, next);
-        }
+    for (const plugin of this.plugins) {
+      try {
+        await plugin.body(ctx);
+      } catch (err) {
+        console.log(`
+        ${red("Error")} in scope of <${magenta(plugin.name)}> Plugin. ${err}
+        `);
       }
-    };
-
-    try {
-      await next();
-    } catch (error) {
-      console.error("Error occurred during plugin execution:", error);
-      response.statusCode = 500;
-      response.end("Internal Server Error");
     }
   }
   /**
@@ -104,9 +104,8 @@ class Aiszo {
    * @param {string} path - The path of the route.
    * @param {function} callback - The callback function to be executed.
    */
-  route(pathname, method, path, callback) {
+  route(method, path, callback) {
     this.httpRequests.push({
-      pathname,
       method,
       path,
       callback,
@@ -120,12 +119,12 @@ class Aiszo {
   registerRoutes(routes, prefix) {
     let prefixedPath;
     for (const route of routes) {
-      const { pathname, method, path, callback } = route;
+      const { method, path, callback } = route;
       prefixedPath = prefix ? (path === "/" ? prefix : prefix + path) : path;
       if (prefixedPath.charAt(0) !== "/") {
         prefixedPath = "/" + prefixedPath;
       }
-      this.route(pathname, method, prefixedPath, callback);
+      this.route(method, prefixedPath, callback);
     }
   }
   /**
@@ -168,8 +167,8 @@ class Aiszo {
    * @param {string} path - The path of the route.
    * @param {function} callback - The callback function to be executed.
    */
-  get(pathname, path, callback) {
-    this.route(pathname, "GET", path, callback);
+  get(path, callback) {
+    this.route("GET", path, callback);
   }
   /**
    * Start the server and listen on the specified port.
@@ -178,7 +177,7 @@ class Aiszo {
   start(port) {
     this.server.listen(port, () => {
       console.log(
-        `-----------------------<Server started on http://localhost:${port}>-----------------------------------`
+        `🦉 Server is running on ${cyan("http://localhost:")}${cyan(port)}.`
       );
     });
   }

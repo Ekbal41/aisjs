@@ -1,32 +1,31 @@
 const { yellow, green, blue, cyan, red, magenta, white } = require("colorette");
 
-const aisLogger = (context, next) => {
-  let pluginCount = context.ais.plugins.length;
-  const { request, response } = context;
+const aisLogger = (ctx) => {
+  let pluginCount = ctx.self.plugins.length;
+  const { req, res } = ctx;
   const startTime = new Date();
-  response.on("finish", () => {
+  res.on("finish", () => {
     const endTime = new Date();
     const requestTime = endTime - startTime;
     const logLine = formatLogLine(
       endTime,
-      request,
-      response,
+      req,
+      res,
       requestTime,
       pluginCount
     );
     console.log(logLine);
   });
-  next();
 };
 
-function formatLogLine(time, request, response, duration, pluginCount) {
+function formatLogLine(time, req, res, duration, pluginCount) {
   const timestamp = formatTime(time);
-  const methodColor = getMethodColor(request.method);
-  const statusColor = getStatusColor(response.statusCode);
+  const methodColor = getMethodColor(req.method);
+  const statusColor = getStatusColor(res.statusCode);
 
-  const logMessage = `${timestamp} [ais] ${methodColor(request.method)} ${
-    request.url
-  } ${statusColor(response.statusCode)} [plugins : ${statusColor(
+  const logMessage = `${timestamp} [self] ${methodColor(req.method)} ${
+    req.url
+  } ${statusColor(res.statusCode)} [plugins : ${statusColor(
     pluginCount
   )}] ${duration}ms`;
 

@@ -1,10 +1,10 @@
 {
   "name": "aiszo",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "files": [
     "README.md",
     "index.js",
-    "core/ais.js",
+    "core/*.js",
     "plugins/*.js"
   ],
   "description": "A node js framework",

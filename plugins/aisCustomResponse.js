@@ -1,30 +1,29 @@
 /**
- * Plugin for customizing response methods.
- * @param {object} context - The context object containing response.
+ * Plugin for customizing res methods.
+ * @param {object} ctx - The ctx object containing res.
  * @param {function} next - The next plugin function.
  */
-const aisCustomResponse = (context, next) => {
-  if (context.response) {
+const aisCustomResponse = (ctx) => {
+  if (ctx.res) {
     /**
-     * Sends a response message.
-     * @param {string} message - The message to send in the response.
+     * Sends a res message.
+     * @param {string} message - The message to send in the res.
      * @returns {void}
      */
-    context.response.send = (message) => {
-      return context.response.end(message);
+    ctx.res.send = (message) => {
+      return ctx.res.end(message);
     };
 
     /**
-     * Sends a JSON response.
-     * @param {object} data - The JSON data to send in the response.
+     * Sends a JSON res.
+     * @param {object} data - The JSON data to send in the res.
      * @returns {void}
      */
-    context.response.json = (data) => {
-      context.response.setHeader("Content-Type", "application/json");
-      return context.response.end(JSON.stringify(data));
+    ctx.res.json = (data) => {
+      ctx.res.setHeader("Content-Type", "application/json");
+      return ctx.res.end(JSON.stringify(data));
     };
   }
-  next();
 };
 
 module.exports = aisCustomResponse;

@@ -1,66 +1,54 @@
-/**
- * Plugin for parsing and matching URLs with routes.
- * @param {object} context - The context object containing routes, request, and response.
- * @param {function} next - The next plugin function.
- */
-const aisUrlParserAndResponseSender = (context, next) => {
+const path = require("path");
+const fs = require("fs");
+const { join } = require("path");
 
-  const { routes, request, response } = context;
-
-  for (const requestObj of routes) {
-    const regexPattern = urlToRegex(requestObj.path);
-    const regex = new RegExp(`^${regexPattern}(\\?.*)?$`);
-
-    if (request.url === "/" && requestObj.path === "/") {
-      context.routeMatched = true;
-      return requestObj.callback(request, response);
-    }
-
-    const optionallyMatched = regex.test(request.url);
-    if (optionallyMatched) {
-      context.routeMatched = true;
-      return requestObj.callback(request, response);
-    }
+const aisUrlParserAndResponseSender = async (ctx) => {
+  const { self, req, res, aiszo, currentRoute, routeMatched } = ctx;
+  const assetsFolder = self.assetsFolder.startsWith("/")
+    ? self.assetsFolder
+    : "/" + self.assetsFolder;
+  if (routeMatched) {
+    currentRoute?.callback(req, res, aiszo);
   }
-
-  if (!context.routeMatched) {
-    response.statusCode = 404;
-    response.end(`${request.url} Route Not found`);
-  }
-  // next();
-};
-
-/**
- * Converts a URL string to a regular expression pattern.
- * @param {string} url - The URL string.
- * @returns {string} The regular expression pattern.
- */
-function urlToRegex(url) {
-  let regexPattern = "";
-
-  for (let i = 0; i < url.length; i++) {
-    const c = url.charAt(i);
-
-    if (c === ":") {
-      let param = "";
-      let j;
-
-      for (j = i + 1; j < url.length; j++) {
-        if (/\w/.test(url.charAt(j))) {
-          param += url.charAt(j);
-        } else {
-          break;
-        }
-      }
-
-      regexPattern += `(?<${param}>\\w+)`;
-      i = j - 1;
+  if (!routeMatched) {
+    const isAssetPath = req.url.startsWith(assetsFolder);
+    if (isAssetPath) {
+      serveStaticFile(req, res);
     } else {
-      regexPattern += c;
+      res.statusCode = 404;
+      res.end(`${req.url} not found on this server!`);
     }
   }
-
-  return regexPattern;
-}
-
+};
+const serveStaticFile = (req, res) => {
+  let __dirname = process.cwd();
+  const filePath = join(__dirname, req.url);
+  fs.access(filePath, fs.constants.F_OK, (err) => {
+    if (err) {
+      res.statusCode = 404;
+      res.end("404 Not Found");
+      return;
+    }
+    fs.readFile(filePath, (err, data) => {
+      if (err) {
+        res.statusCode = 500;
+        res.end("Internal Server Error");
+        return;
+      }
+      // Determine the Content-Type based on the file extension
+      let contentType = "text/plain";
+      const ext = path.extname(filePath);
+      if (ext === ".html") {
+        contentType = "text/html";
+      } else if (ext === ".css") {
+        contentType = "text/css";
+      } else if (ext === ".js") {
+        contentType = "text/javascript";
+      }
+      res.setHeader("Content-Type", contentType);
+      res.statusCode = 200;
+      res.end(data);
+    });
+  });
+};
 module.exports = aisUrlParserAndResponseSender;
