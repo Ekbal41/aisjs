@@ -10,7 +10,7 @@
   "description": "A node js framework",
   "main": "./core/ais.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "node index.js"
   },
   "keywords": [
     "ais",

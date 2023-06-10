@@ -3,7 +3,7 @@ const userRoutes = [
     method: "GET",
     path: "/",
     callback: (req, res) => {
-      res.render("./views/welcome.html", {
+      res.render("./views/index.html", {
         title: "Welcome to Aiszo",
         message: "Welcome to Aiszo",
         version: "1.0.0",
@@ -12,9 +12,9 @@ const userRoutes = [
   },
   {
     method: "GET",
-    path: "/test",
+    path: "/about",
     callback: (req, res) => {
-      res.render("./views/welcome.html", {
+      res.render("./views/about.html", {
         title: "Welcome to test page",
         message: "Welcome to test page",
         version: "1.0.0",
@@ -23,18 +23,20 @@ const userRoutes = [
   },
   {
     method: "GET",
-    path: "/test/:name1",
+    path: "/docs",
     callback: (req, res) => {
-      const { name1 } = req.params;
-      res.end(`Hello ${name1}!`);
+      res.render("./views/docs/docs.html", {
+        title: "Welcome to test page",
+      });
     },
   },
   {
     method: "GET",
-    path: "/test/:name1/:name2",
+    path: "/plugins",
     callback: (req, res) => {
-      const { name1, name2 } = req.params;
-      res.end(`Hello ${name1}! and ${name2}`);
+      res.render("./views/plugins/plugins.html", {
+        title: "Welcome to test page",
+      });
     },
   },
   {

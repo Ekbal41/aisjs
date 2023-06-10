@@ -13,18 +13,7 @@ ais.register("viewEngine", {
 const plugin1 = (ctx) => {
   const { index } = ctx;
 };
-const plugin2 = (ctx) => {
-  const { index } = ctx;
-};
+const plugin2 = (ctx) => {};
 ais.registerRoutes(userRoutes);
-ais.registerPlugins([
-  {
-    name: "plugin1",
-    body: plugin1,
-  },
-  {
-    name: "plugin2",
-    body: plugin2,
-  },
-]);
+ais.registerPlugins([plugin1, plugin2]);
 ais.start(8000);

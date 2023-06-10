@@ -31,26 +31,11 @@ class Aiszo {
    */
   defaultPlugins() {
     this.registerPlugins([
-      {
-        name: "aisLogger",
-        body: aisLogger,
-      },
-      {
-        name: "aisCustomResponse",
-        body: aisCustomResponse,
-      },
-      {
-        name: "aisRegistersHandler",
-        body: aisRegistersHandler,
-      },
-      {
-        name: "aisParamsAndQueryParser",
-        body: aisParamsAndQueryParser,
-      },
-      {
-        name: "aisResponseSender",
-        body: aisResponseSender, // always leve this at the end
-      },
+      aisLogger,
+      aisCustomResponse,
+      aisRegistersHandler,
+      aisParamsAndQueryParser,
+      aisResponseSender, // always leve this at the end
     ]);
   }
   /**
@@ -87,15 +72,26 @@ class Aiszo {
       currentRoute: null,
       currentAssetsRoute: null,
     };
-    for (const plugin of this.plugins) {
-      try {
-        await plugin.body(ctx);
-      } catch (err) {
+
+    // }
+    this.plugins.forEach(async (plugin) => {
+      let pluginName = plugin.name;
+      if (!pluginName) {
         console.log(`
-        ${red("Error")} in scope of <${magenta(plugin.name)}> Plugin. ${err}
+        ${red("Error")} : Plugin must be a named function.
         `);
       }
-    }
+
+      try {
+        await plugin(ctx);
+      } catch (err) {
+        console.log(`
+        ${red("Error")} in scope of <${magenta(
+          plugin.name || "_______"
+        )}> Plugin. ${err}
+        `);
+      }
+    });
   }
   /**
    * Register a route with a callback function.

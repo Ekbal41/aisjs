@@ -2,7 +2,7 @@ const path = require("path");
 const fs = require("fs");
 const { join } = require("path");
 
-const aisUrlParserAndResponseSender = async (ctx) => {
+const aisResponseSender = async (ctx) => {
   const { self, req, res, aiszo, currentRoute, routeMatched } = ctx;
   const assetsFolder = self.assetsFolder.startsWith("/")
     ? self.assetsFolder
@@ -51,4 +51,4 @@ const serveStaticFile = (req, res) => {
     });
   });
 };
-module.exports = aisUrlParserAndResponseSender;
+module.exports = aisResponseSender;
