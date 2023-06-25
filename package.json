@@ -1,6 +1,6 @@
 {
-  "name": "aiszo",
-  "version": "1.0.4",
+  "name": "enova",
+  "version": "1.0.7",
   "files": [
     "README.md",
     "index.js",
@@ -8,12 +8,12 @@
     "plugins/*.js"
   ],
   "description": "A node js framework",
-  "main": "./core/ais.js",
+  "main": "./core/enova.js",
   "scripts": {
     "dev": "node index.js"
   },
   "keywords": [
-    "ais",
+    "enova",
     "framework",
     "web",
     "http",
@@ -26,7 +26,7 @@
   "author": "Asif Ekbal (https://asifekbal.vercel.app)",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Ekbal41/aisjs.git"
+    "url": "https://github.com/Ekbal41/enova.git"
   },
   "license": "MIT",
   "dependencies": {

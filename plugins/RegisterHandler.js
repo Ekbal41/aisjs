@@ -1,4 +1,4 @@
-const aisRegistersHandler = (ctx) => {
+const RegistersHandler = (ctx) => {
   const { self } = ctx;
   //Registering others
   const { name, engine, config } = self.viewEngine;
@@ -21,9 +21,9 @@ const aisRegistersHandler = (ctx) => {
   }
 
   //Registering other things
-  ctx.aiszo.jwtToken = (tok) => {
+  ctx.enova.jwtToken = (tok) => {
     console.log(`Your token is here${tok}`);
   };
 };
 
-module.exports = aisRegistersHandler;
+module.exports = RegistersHandler;

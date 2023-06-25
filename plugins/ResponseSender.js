@@ -2,13 +2,13 @@ const path = require("path");
 const fs = require("fs");
 const { join } = require("path");
 
-const aisResponseSender = async (ctx) => {
-  const { self, req, res, aiszo, currentRoute, routeMatched } = ctx;
+const ResponseSender = async (ctx) => {
+  const { self, req, res, enova, currentRoute, routeMatched } = ctx;
   const assetsFolder = self.assetsFolder.startsWith("/")
     ? self.assetsFolder
     : "/" + self.assetsFolder;
   if (routeMatched) {
-    currentRoute?.callback(req, res, aiszo);
+    currentRoute?.callback(req, res, enova);
   }
   if (!routeMatched) {
     const isAssetPath = req.url.startsWith(assetsFolder);
@@ -51,4 +51,4 @@ const serveStaticFile = (req, res) => {
     });
   });
 };
-module.exports = aisResponseSender;
+module.exports = ResponseSender;

@@ -1,6 +1,6 @@
 const { yellow, green, blue, cyan, red, magenta, white } = require("colorette");
 
-const aisLogger = (ctx) => {
+const Logger = (ctx) => {
   let pluginCount = ctx.self.plugins.length;
   const { req, res } = ctx;
   const startTime = new Date();
@@ -23,7 +23,7 @@ function formatLogLine(time, req, res, duration, pluginCount) {
   const methodColor = getMethodColor(req.method);
   const statusColor = getStatusColor(res.statusCode);
 
-  const logMessage = `${timestamp} [self] ${methodColor(req.method)} ${
+  const logMessage = `${timestamp} [anova] ${methodColor(req.method)} ${
     req.url
   } ${statusColor(res.statusCode)} [plugins : ${statusColor(
     pluginCount
@@ -70,4 +70,4 @@ function getStatusColor(statusCode) {
   }
 }
 
-module.exports = aisLogger;
+module.exports = Logger;

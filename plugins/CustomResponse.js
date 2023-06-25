@@ -3,7 +3,7 @@
  * @param {object} ctx - The ctx object containing res.
  * @param {function} next - The next plugin function.
  */
-const aisCustomResponse = (ctx) => {
+const CustomResponse = (ctx) => {
   if (ctx.res) {
     /**
      * Sends a res message.
@@ -26,4 +26,4 @@ const aisCustomResponse = (ctx) => {
   }
 };
 
-module.exports = aisCustomResponse;
+module.exports = CustomResponse;

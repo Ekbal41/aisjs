@@ -1,4 +1,4 @@
-aisParamsAndQueryParser = (ctx) => {
+ParamsAndQueryParser = (ctx) => {
   const { req, self } = ctx;
   let localCurrentRoute = "";
   for (const route of self.httpRequests) {
@@ -91,4 +91,4 @@ aisParamsAndQueryParser = (ctx) => {
     return regexPattern;
   }
 };
-module.exports = aisParamsAndQueryParser;
+module.exports = ParamsAndQueryParser;

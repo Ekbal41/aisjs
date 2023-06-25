@@ -1,11 +1,12 @@
 const userRoutes = [
+  
   {
     method: "GET",
     path: "/",
     callback: (req, res) => {
       res.render("./views/index.html", {
-        title: "Welcome to Aiszo",
-        message: "Welcome to Aiszo",
+        title: "Welcome to enova",
+        message: "Welcome to enova",
         version: "1.0.0",
       });
     },

@@ -1,19 +1,24 @@
-const Aiszo = require("../index.js");
+const Enova = require("../index.js");
 const userRoutes = require("./routes/userRoutes.js");
 const nunjucks = require("nunjucks");
-const ais = new Aiszo();
-ais.register("assetsFolder", {
+const app = new Enova();
+
+app.register("assetsFolder", {
   path: "assets",
 });
-ais.register("viewEngine", {
+app.register("viewEngine", {
   name: "nunjucks",
   engine: nunjucks,
   config: {},
 });
-const plugin1 = (ctx) => {
+
+app.get("/test", (req,res)=>{
+  res.json({"status" : true})
+  
+})
+const TestPlugin = (ctx) => {
   const { index } = ctx;
 };
-const plugin2 = (ctx) => {};
-ais.registerRoutes(userRoutes);
-ais.registerPlugins([plugin1, plugin2]);
-ais.start(8000);
+app.registerRoutes(userRoutes);
+app.registerPlugins([TestPlugin]);
+app.start(8000);

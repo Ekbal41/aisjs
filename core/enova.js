@@ -1,11 +1,11 @@
 const http = require("http");
 const { cyan, red, magenta } = require("colorette");
-const aisLogger = require("../plugins/aisLogger");
-const aisParamsAndQueryParser = require("../plugins/aisParamsAndQueryParser");
-const aisResponseSender = require("../plugins/aisResponseSender");
-const aisCustomResponse = require("../plugins/aisCustomResponse");
-const aisRegistersHandler = require("../plugins/aisRegistersHandler");
-class Aiszo {
+const Logger = require("../plugins/Logger");
+const ParamsAndQueryParser = require("../plugins/ParamsAndQueryParser");
+const ResponseSender = require("../plugins/ResponseSender");
+const CustomResponse = require("../plugins/CustomResponse");
+const RegisterHandler = require("../plugins/RegisterHandler");
+class Enova {
   constructor() {
     this.server = http.createServer(this.handleRequest.bind(this));
     this.httpRequests = [];
@@ -13,7 +13,6 @@ class Aiszo {
     this.defaultPlugins();
     this.viewEngine = null;
     this.assetsFolder = null;
-    this.onAssetsCallback = null;
   }
   /**
    * Register plugins to be used by the server.
@@ -31,11 +30,11 @@ class Aiszo {
    */
   defaultPlugins() {
     this.registerPlugins([
-      aisLogger,
-      aisCustomResponse,
-      aisRegistersHandler,
-      aisParamsAndQueryParser,
-      aisResponseSender, // always leve this at the end
+      Logger,
+      CustomResponse,
+      RegisterHandler,
+      ParamsAndQueryParser,
+      ResponseSender, // always leve this at the end
     ]);
   }
   /**
@@ -67,10 +66,9 @@ class Aiszo {
       res,
       self: this,
       index: 0,
-      aiszo: {},
+      enova: {},
       routeMatched: false,
       currentRoute: null,
-      currentAssetsRoute: null,
     };
 
     // }
@@ -179,4 +177,4 @@ class Aiszo {
   }
 }
 
-module.exports = Aiszo;
+module.exports = Enova;
