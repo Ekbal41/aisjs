@@ -96,12 +96,12 @@ class Enova {
    * @param {string} pathname - The pathname of the route.
    * @param {string} method - The HTTP method of the route.
    * @param {string} path - The path of the route.
-   * @param {function} callback - The callback function to be executed.
    */
-  route(method, path, callback) {
+  route(method, path, mids, callback) {
     this.httpRequests.push({
       method,
       path,
+      mids,
       callback,
     });
   }
@@ -155,14 +155,10 @@ class Enova {
 
     this.assetsFolder = path;
   }
-  /**
-   * Register a GET route with a callback function.
-   * @param {string} pathname - The pathname of the route.
-   * @param {string} path - The path of the route.
-   * @param {function} callback - The callback function to be executed.
-   */
-  get(path, callback) {
-    this.route("GET", path, callback);
+
+  get(path, ...mids) {
+    const callback = mids.pop();
+    this.route("GET", path, mids, callback);
   }
   /**
    * Start the server and listen on the specified port.

@@ -12,10 +12,15 @@ app.register("viewEngine", {
   config: {},
 });
 
-app.get("/test", (req,res)=>{
-  res.json({"status" : true})
-  
-})
+app.get("/test", mid1, mid2, (req, res) => {
+  res.json({ status: true });
+});
+function mid1() {
+  console.log("mid1");
+}
+function mid2() {
+  console.log("mid2");
+}
 const TestPlugin = (ctx) => {
   const { index } = ctx;
 };

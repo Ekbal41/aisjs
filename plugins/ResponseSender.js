@@ -1,6 +1,7 @@
 const path = require("path");
 const fs = require("fs");
 const { join } = require("path");
+const { red, magenta } = require("colorette");
 
 const ResponseSender = async (ctx) => {
   const { self, req, res, enova, currentRoute, routeMatched } = ctx;
@@ -8,7 +9,30 @@ const ResponseSender = async (ctx) => {
     ? self.assetsFolder
     : "/" + self.assetsFolder;
   if (routeMatched) {
-    currentRoute?.callback(req, res, enova);
+    const { mids, callback } = currentRoute;
+    for (const mid of mids) {
+      try {
+        await mid(req, res, enova);
+      } catch (err) {
+        console.log(`
+          ${red("Error")} in Middlewire <${magenta(
+          mid.name || "_______"
+        )}> on Route <${magenta(currentRoute.path || "_______")}> . ${err}
+        `);
+        return;
+      }
+    }
+    try {
+      await callback(req, res, enova);
+    } catch (err) {
+      console.log(`
+        ${red("Error")} in Callback of Route <${magenta(
+        currentRoute.path || "_______"
+      )}> . ${err}
+      `);
+    }
+
+    // currentRoute?.callback(req, res, enova);
   }
   if (!routeMatched) {
     const isAssetPath = req.url.startsWith(assetsFolder);

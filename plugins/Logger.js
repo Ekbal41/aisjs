@@ -23,7 +23,7 @@ function formatLogLine(time, req, res, duration, pluginCount) {
   const methodColor = getMethodColor(req.method);
   const statusColor = getStatusColor(res.statusCode);
 
-  const logMessage = `${timestamp} [anova] ${methodColor(req.method)} ${
+  const logMessage = `${timestamp} [enova] ${methodColor(req.method)} ${
     req.url
   } ${statusColor(res.statusCode)} [plugins : ${statusColor(
     pluginCount
