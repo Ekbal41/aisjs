@@ -15,13 +15,14 @@ const ResponseSender = async (ctx) => {
         await mid(req, res, enova);
       } catch (err) {
         console.log(`
-          ${red("Error")} in Middlewire <${magenta(
+            ${red("Error")} in Middlewire <${magenta(
           mid.name || "_______"
         )}> on Route <${magenta(currentRoute.path || "_______")}> . ${err}
-        `);
+          `);
         return;
       }
     }
+
     try {
       await callback(req, res, enova);
     } catch (err) {

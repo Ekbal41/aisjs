@@ -14,6 +14,7 @@ class Enova {
     this.viewEngine = null;
     this.assetsFolder = null;
   }
+
   /**
    * Register plugins to be used by the server.
    * @param {Array|object} plugins - An array or single plugin to register.
@@ -71,7 +72,6 @@ class Enova {
       currentRoute: null,
     };
 
-    // }
     this.plugins.forEach(async (plugin) => {
       let pluginName = plugin.name;
       if (!pluginName) {
@@ -105,22 +105,7 @@ class Enova {
       callback,
     });
   }
-  /**
-   * Register multiple routes with a common prefix.
-   * @param {Array} routes - An array of route configurations.
-   * @param {string} prefix - The common prefix for the routes.
-   */
-  registerRoutes(routes, prefix) {
-    let prefixedPath;
-    for (const route of routes) {
-      const { method, path, callback } = route;
-      prefixedPath = prefix ? (path === "/" ? prefix : prefix + path) : path;
-      if (prefixedPath.charAt(0) !== "/") {
-        prefixedPath = "/" + prefixedPath;
-      }
-      this.route(method, prefixedPath, callback);
-    }
-  }
+
   /**
    * Register the view engine plugin.
    * @param {object} plugin - The view engine plugin configuration.
