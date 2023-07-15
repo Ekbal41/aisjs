@@ -1,3 +1,5 @@
+const ErorrBody = require("../core/erorr-body");
+
 /**
  * Plugin for customizing res methods.
  * @param {object} ctx - The ctx object containing res.
@@ -31,6 +33,9 @@ const CustomResponse = (ctx) => {
         `${url}${message ? `?message=${message}` : ""}`
       );
       return ctx.res.end();
+    };
+    ctx.res.erorr = (body) => {
+      return ctx.res.end(ErorrBody(body));
     };
   }
 };

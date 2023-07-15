@@ -1,4 +1,4 @@
-function ErorrBody(url, route, err) {
+function ErorrBody(body) {
   return `
   <!DOCTYPE html>
   <html lang="en">
@@ -26,7 +26,6 @@ function ErorrBody(url, route, err) {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          transition: all 0.3s ease-in-out;
         }
       </style>
     </head>
@@ -37,10 +36,7 @@ function ErorrBody(url, route, err) {
           <button id="goback" class="erorr-button">Go Back</button>
         </div>
         <div style="line-height: normal">
-        Erorr on route ${route} 
-          <br/>
-          - ${line1}
-          - ${err}
+        ${body}
         </div>
       </div>
       <script>

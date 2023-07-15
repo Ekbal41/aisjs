@@ -16,13 +16,13 @@ const ResponseSender = async (ctx) => {
       try {
         if (req.method === method) {
           handleMethods(res, req, method);
-          await callback(req, res, enova);
+          await mid(req, res, enova);
         } else {
-          res.end(`
-          Requested ${req.method} method not supported on this route!
-          Erorr in Middlewire <${mid.name || "_______"}> on Route <${
+          res.erorr(`
+          Requested ${req.method} method not supported on this route! </br>
+          Erorr in Middlewire ${mid.name || "_______"} on Route ${
             currentRoute.path || "_______"
-          }> .
+          } .
           `);
         }
       } catch (err) {
@@ -31,7 +31,14 @@ const ResponseSender = async (ctx) => {
           mid.name || "_______"
         )}> on Route <${magenta(currentRoute.path || "_______")}> . ${err}
           `);
-        return;
+
+        res.erorr(
+          `Erorr in Middlewire ${mid.name || "_______"} on Route ${
+            currentRoute.path || "_______"
+          } </br>
+            ${err} 
+            `
+        );
       }
     }
 
@@ -45,9 +52,9 @@ const ResponseSender = async (ctx) => {
         }
         await callback(req, res, enova);
       } else {
-        res.end(`
-        Requested ${req.method} method not supported on this route!
-        Erorr in Callback of Route <${currentRoute.path || "_______"}> .
+        res.erorr(`
+        Requested ${req.method} method not supported on this route! </br>
+        Erorr in Callback of Route ${currentRoute.path || "_______"} .
         `);
       }
     } catch (err) {
@@ -56,10 +63,12 @@ const ResponseSender = async (ctx) => {
         currentRoute.path || "_______"
       )}> . ${err}
       `);
-      res.end(`
-        Erorr in Callback of Route <${currentRoute.path || "_______"}> .
-        ${err}
-      `);
+
+      res.erorr(
+        `Erorr in Callback of Route ${currentRoute.path || "_______"} .</br>
+        ${err} 
+        `
+      );
     }
   }
   if (!routeMatched) {
