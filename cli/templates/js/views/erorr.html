@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Erorr</title>
+    <style>
+      .container {
+        font-family: monospace;
+        background-color: rgb(237, 224, 224);
+        border-radius: 10px;
+        margin: 100px;
+        padding: 20px;
+      }
+      .erorr-button {
+        background-color: red;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 5px 10px;
+        cursor: pointer;
+      }
+      .flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.3s ease-in-out;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="flex">
+        <h3 style="margin: 0px; color: red">Error in:</h3>
+        <button id="goback" class="erorr-button">Go Back</button>
+      </div>
+      <div style="line-height: normal">
+        <p>Lorem ipsum dolor sit amet.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing.</p>
+      </div>
+    </div>
+    <script>
+      const goback = document.getElementById("#goback");
+      goback.addEventListener("click", () => {
+        window.history.back();
+      });
+    </script>
+  </body>
+</html>

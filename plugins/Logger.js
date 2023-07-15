@@ -7,13 +7,9 @@ const Logger = (ctx) => {
   res.on("finish", () => {
     const endTime = new Date();
     const requestTime = endTime - startTime;
-    const logLine = formatLogLine(
-      endTime,
-      req,
-      res,
-      requestTime,
-      pluginCount
-    );
+    const logLine = formatLogLine(endTime, req, res, requestTime, pluginCount);
+    const assetsFolder = ctx.self.get("assetsFolder");
+    if (logLine.includes(`/${ctx.self.assetsFolder}`)) return;
     console.log(logLine);
   });
 };

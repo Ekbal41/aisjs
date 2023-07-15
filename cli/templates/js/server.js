@@ -12,7 +12,14 @@ app.register("viewEngine", {
 });
 
 app.get("/", (req, res) => {
-  res.render("views/index.html")
+  const message = req.query.message;
+  const msg = decodeURIComponent(message);
+  res.render("views/index.html", { msg });
+});
+app.post("/post", (req, res) => {
+  const message = "Form submitted successfully";
+  console.log(req.formData);
+  res.redirect("/", message);
 });
 
 // app.registerPlugins([TestPlugin]);

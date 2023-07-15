@@ -1,18 +1,16 @@
 {
-  "name": "test",
-  "version": "1.0.0",
+  "name": "enova-starter",
+  "version": "1.0.9",
   "description": "",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
-    "dev": "nodemon -e * server.js"
+    "dev": "nodemon -e ** server.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "commander": "^11.0.0",
-    "fs-extra": "^11.1.1",
-    "inquirer": "^9.2.7",
-    "nunjucks": "^3.2.4"
+    "nunjucks": "^3.2.4",
+    "enova": "^1.0.9"
   },
   "devDependencies": {
     "nodemon": "^2.0.22"

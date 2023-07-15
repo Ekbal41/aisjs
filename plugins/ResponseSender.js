@@ -2,6 +2,8 @@ const path = require("path");
 const fs = require("fs");
 const { join } = require("path");
 const { red, magenta } = require("colorette");
+const { handleMethods, collectRequestBody } = require("../core/methods.js");
+const ErorrBody = require("../core/erorr-body.js");
 
 const ResponseSender = async (ctx) => {
   const { self, req, res, enova, currentRoute, routeMatched } = ctx;
@@ -9,10 +11,20 @@ const ResponseSender = async (ctx) => {
     ? self.assetsFolder
     : "/" + self.assetsFolder;
   if (routeMatched) {
-    const { mids, callback } = currentRoute;
+    const { method, mids, callback } = currentRoute;
     for (const mid of mids) {
       try {
-        await mid(req, res, enova);
+        if (req.method === method) {
+          handleMethods(res, req, method);
+          await callback(req, res, enova);
+        } else {
+          res.end(`
+          Requested ${req.method} method not supported on this route!
+          Erorr in Middlewire <${mid.name || "_______"}> on Route <${
+            currentRoute.path || "_______"
+          }> .
+          `);
+        }
       } catch (err) {
         console.log(`
             ${red("Error")} in Middlewire <${magenta(
@@ -24,16 +36,31 @@ const ResponseSender = async (ctx) => {
     }
 
     try {
-      await callback(req, res, enova);
+      if (req.method === method) {
+        handleMethods(res, req, method);
+        if (req.method === "POST" || req.method === "UPDATE") {
+          const requestBody = await collectRequestBody(req);
+          const data = Object.fromEntries(new URLSearchParams(requestBody));
+          req.formData = data;
+        }
+        await callback(req, res, enova);
+      } else {
+        res.end(`
+        Requested ${req.method} method not supported on this route!
+        Erorr in Callback of Route <${currentRoute.path || "_______"}> .
+        `);
+      }
     } catch (err) {
       console.log(`
         ${red("Error")} in Callback of Route <${magenta(
         currentRoute.path || "_______"
       )}> . ${err}
       `);
+      res.end(`
+        Erorr in Callback of Route <${currentRoute.path || "_______"}> .
+        ${err}
+      `);
     }
-
-    // currentRoute?.callback(req, res, enova);
   }
   if (!routeMatched) {
     const isAssetPath = req.url.startsWith(assetsFolder);
@@ -41,10 +68,14 @@ const ResponseSender = async (ctx) => {
       serveStaticFile(req, res);
     } else {
       res.statusCode = 404;
-      res.end(`${req.url} not found on this server!`);
+      res.end(`
+      ${req.url} not found on this server!
+      Make sure you have registered the route.
+      `);
     }
   }
 };
+
 const serveStaticFile = (req, res) => {
   let __dirname = process.cwd();
   const filePath = join(__dirname, req.url);

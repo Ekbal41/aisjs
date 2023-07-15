@@ -145,6 +145,10 @@ class Enova {
     const callback = mids.pop();
     this.route("GET", path, mids, callback);
   }
+  post(path, ...mids) {
+    const callback = mids.pop();
+    this.route("POST", path, mids, callback);
+  }
   /**
    * Start the server and listen on the specified port.
    * @param {number} port - The port number to listen on.

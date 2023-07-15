@@ -23,6 +23,15 @@ const CustomResponse = (ctx) => {
       ctx.res.setHeader("Content-Type", "application/json");
       return ctx.res.end(JSON.stringify(data));
     };
+
+    ctx.res.redirect = (url, message) => {
+      ctx.res.statusCode = 302;
+      ctx.res.setHeader(
+        "Location",
+        `${url}${message ? `?message=${message}` : ""}`
+      );
+      return ctx.res.end();
+    };
   }
 };
 
