@@ -34,8 +34,8 @@ const CustomResponse = (ctx) => {
       );
       return ctx.res.end();
     };
-    ctx.res.erorr = (body) => {
-      return ctx.res.end(ErorrBody(body));
+    ctx.res.erorr = (err, msg) => {
+      return ctx.res.end(ErorrBody(err, msg));
     };
   }
 };

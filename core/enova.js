@@ -12,7 +12,7 @@ class Enova {
     this.plugins = [];
     this.defaultPlugins();
     this.viewEngine = null;
-    this.assetsFolder = null;
+    this.assetsFolder = "public";
   }
 
   /**
@@ -112,13 +112,6 @@ class Enova {
    */
   registerViewEngine(plugin) {
     const { name, engine, config } = plugin;
-
-    if (!name || !engine) {
-      throw new Error(
-        "Invalid view engine registration. Please provide a name and an engine."
-      );
-    }
-
     this.viewEngine = {
       name,
       engine,
@@ -131,13 +124,9 @@ class Enova {
    */
   registerAssetsFolder(plugin) {
     const { path } = plugin;
-
     if (!path) {
-      throw new Error(
-        "Invalid assets folder registration. Please provide a path."
-      );
+      throw new Error(`Assets folder path is required.`);
     }
-
     this.assetsFolder = path;
   }
 
@@ -148,6 +137,14 @@ class Enova {
   post(path, ...mids) {
     const callback = mids.pop();
     this.route("POST", path, mids, callback);
+  }
+  delete(path, ...mids) {
+    const callback = mids.pop();
+    this.route("DELETE", path, mids, callback);
+  }
+  update(path, ...mids) {
+    const callback = mids.pop();
+    this.route("UPDATE", path, mids, callback);
   }
   /**
    * Start the server and listen on the specified port.

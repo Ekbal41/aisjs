@@ -1,4 +1,6 @@
-function ErorrBody(body) {
+function ErorrBody(err, msg) {
+  const formattedStack = err.stack.replace(/\n/g, "<br>");
+
   return `
   <!DOCTYPE html>
 <html lang="en">
@@ -86,7 +88,9 @@ function ErorrBody(body) {
         </div>
       </div>
       <div class="body">
-       ${body}
+      <p>${msg || ""}</p>
+       ${formattedStack || ""}
+
       </div>
       <div class="footer">
         <p>Enova v1.0.10</p>

@@ -3,7 +3,6 @@ const fs = require("fs");
 const { join } = require("path");
 const { red, magenta } = require("colorette");
 const { handleMethods, collectRequestBody } = require("../core/methods.js");
-const ErorrBody = require("../core/erorr-body.js");
 
 const ResponseSender = async (ctx) => {
   const { self, req, res, enova, currentRoute, routeMatched } = ctx;
@@ -31,13 +30,11 @@ const ResponseSender = async (ctx) => {
           mid.name || "_______"
         )}> on Route <${magenta(currentRoute.path || "_______")}> . ${err}
           `);
-
         res.erorr(
-          `Erorr in Middlewire ${mid.name || "_______"} on Route ${
+          err,
+          (msg = `Erorr in Middlewire ${mid.name || "_______"} on Route ${
             currentRoute.path || "_______"
-          } </br>
-            ${err} 
-            `
+          }`)
         );
       }
     }
@@ -59,15 +56,13 @@ const ResponseSender = async (ctx) => {
       }
     } catch (err) {
       console.log(`
-        ${red("Error")} in Callback of Route <${magenta(
+        ${red("Error")} in Route <${magenta(
         currentRoute.path || "_______"
-      )}> . ${err}
+      )}> Callback . ${err}
       `);
-
       res.erorr(
-        `Erorr in Callback of Route ${currentRoute.path || "_______"} .</br>
-        ${err} 
-        `
+        err,
+        (msg = `Erorr in Route ${currentRoute.path || "_______"} callback`)
       );
     }
   }
