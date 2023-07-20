@@ -19,7 +19,7 @@ const app = new Enova();
 
 app.get("/", (req, res) => {
   const title = "Default Nunjucks Template";
-  res.render("views/index.html", { title });
+  res.render5("views/index.html", { title });
 });
 
 // For any custom Plugins, Register here
