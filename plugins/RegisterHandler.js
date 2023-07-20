@@ -32,6 +32,7 @@ const RegistersHandler = async (ctx) => {
         res.end(nunjucks.render(view, data));
       } catch (err) {
         console.log("Error in nunjucks render: ", err);
+        
       }
     };
   }

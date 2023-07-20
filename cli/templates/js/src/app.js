@@ -1,4 +1,4 @@
-const Enova = require("../../../index.js");
+const Enova = require("../../../../index.js");
 
 //Initialize Enova
 const app = new Enova();
@@ -19,11 +19,10 @@ const app = new Enova();
 
 app.get("/", (req, res) => {
   const title = "Default Nunjucks Template";
-  res.render5("views/index.html", { title });
+  res.render("src/views/index.html", { title });
 });
 
 // For any custom Plugins, Register here
 // app.registerPlugins([TestPlugin]);
 
 app.start(8000);
-module.exports = app;
