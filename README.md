@@ -58,7 +58,7 @@ app.post("/login", (req, res, enova) => {
 ```
 
 Here `enova` is an object where you can store functions or other things, Which will be available to the whole application.
-Like `matchPassword()` can be available to whole application.
+Like `matchPassword()` will be available to whole application.
 
 ```javascript
 app.get("/", (req, res, enova) => {
@@ -124,13 +124,15 @@ function midOne(req, res, enova) {
 
 To use a Middleware:
 
-````javascript
+```javascript
 app.get("/", midOne, (req, res) => {
   res.render("index.ejs", {
     title: "Welcome to Enova",
     message: "This route is using mid1",
   });
-});```
+});
+
+```
 
 ### Assets
 
@@ -140,7 +142,7 @@ Default assets folder is "/public", but you can change it as needed:
 app.register("assetsFolder", {
   path: "your_assets_folder_name",
 });
-````
+```
 
 ### Templating Engine
 
