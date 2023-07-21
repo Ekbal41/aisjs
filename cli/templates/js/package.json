@@ -4,9 +4,9 @@
   "description": "",
   "main": "src/app.js",
   "scripts": {
-    "dev": "concurrently --silent \"npm run tailwind\" \"npm run start\"",
+    "dev": "concurrently  \"npm run tailwind\" \"npm run start\"",
     "start": "nodemon -e * src/app.js",
-    "tailwind": "npx tailwindcss -i public/main.css -o public/css/tailwind.css --watch"
+    "tailwind": "npx tailwindcss -i public/tailwind/input.css -o public/tailwind/tailwind.css --watch"
   },
   "author": "",
   "license": "ISC",
