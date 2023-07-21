@@ -29,7 +29,7 @@ npm install -g enova
 
 ## Gettin Started
 
-# Create a New Enova Project
+### Create a New Enova Project
 
 After installing Enova, you can quickly generate a new Enova project by running:
 
@@ -42,7 +42,7 @@ npm run dev
 
 The development server will start on `http://localhost:8000/`, and you can start developing your project inside the `src` directory.
 
-# Defining Routes
+### Defining Routes
 
 To define routes in your Enova application, you can use the `app.get()`, `app.post()`, `app.put()`, and `app.delete()` methods. For example:
 
@@ -54,10 +54,9 @@ app.get("/", (req, res) => {
 app.post("/login", (req, res) => {
   // Handle login logic
 });
-
 ```
 
-# Handling Route Parameters and Query Parameters
+### Handling Route Parameters and Query Parameters
 
 Enova allows you to handle route parameters and query parameters in your routes. For route parameters, you can use `req.params`, and for query parameters, you can use `req.query`. For example:
 
@@ -73,7 +72,7 @@ app.get("/search", (req, res) => {
 });
 ```
 
-# Middleware
+### Middleware
 
 Enova supports middleware, which allows you to execute code before processing a request or after processing a request. You can use middleware to perform tasks such as authentication, logging, and error handling. For example:
 
@@ -84,7 +83,7 @@ app.use((req, res, next) => {
 });
 ```
 
-# Assets
+### Assets
 
 Default assets folder is "/public", but you can change it as needed:
 
@@ -94,8 +93,7 @@ app.register("assetsFolder", {
 });
 ```
 
-
-# Templating Engine
+### Templating Engine
 
 Enova comes with Nunjucks as the default templating engine, but you can easily switch to other engines such as EJS. To change the templating engine, use the app.register method:
 
@@ -121,69 +119,6 @@ app.get("/", (req, res) => {
 That's it! You now have a powerful web framework at your disposal to build web applications with ease using Node.js.
 
 Happy coding with Enova!
-
-
-
-## Features
-
-- Create routes supporting `get`, `post`, `put`, `delete` http verbs:
-
-  ```javascript
-  app.get("<path>", middlewire, (req, res) => {});
-  app.post("<path>", (req, res) => {});
-  app.put("<path>", (req, res) => {});
-  app.delete("<path>", (req, res) => {});
-  ```
-
-- To Handles route parameters and query parameters:
-
-  **Router parameters**
-
-  ```javascript
-  app.get("/home/:id/:name", (req, res) => {
-    console.log(req.params); // /home/200/papar returns {id : 200, name : papar}
-  });
-  ```
-
-  **Query parameters**
-
-  ```javascript
-  app.get("/home?name=lofar&&age=23", (req, res) => {
-    console.log(req.query); // returns { name: "lofar", age: "23"}
-  });
-  ```
-
-## Assets
-
-- Default asstes folder is "/puplic" , You can change it.
-
-```javascript
-app.register("assetsFolder", {
-  path: "your_assets_folder_name",
-});
-```
-
-## Templating engine
-
-- Default templating engine is set to Nunjucks. It can be changed too.
-  For now only `ejs` and `nunjucks` supported.
-
-```javascript
-app.register("viewEngine", {
-  name: "view_engine_name",
-  engine: view_emgine,
-  config: {}, //options for the view engine
-});
-```
-
-```javascript
-app.get("/", (req, res) => {
-  res.render("./example/index.html", {
-    title: "Enova Demo Website",
-    message: "Welcome to Enova",
-  });
-});
-```
 
 ## Create an app
 
