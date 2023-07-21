@@ -6,7 +6,6 @@
 
 - [About](#about)
 - [Installation](#installation)
-- [Features](#features)
 - [Getting Started](#getting-started)
   - [Create a New Enova Project](#create-a-new-enova-project)
   - [Defining Routes](#defining-routes)
@@ -27,7 +26,7 @@ To install Enova in your project, use npm:
 npm install -g enova
 ```
 
-## Gettin Started
+## Getting Started
 
 ### Create a New Enova Project
 
