@@ -10,9 +10,11 @@
   - [Create a New Enova Project](#create-a-new-enova-project)
   - [Defining Routes](#defining-routes)
   - [Handling Route Parameters and Query Parameters](#handling-route-parameters-and-query-parameters)
+  - [Plugin](#plugin)
   - [Middleware](#middleware)
 - [Assets](#assets)
 - [Templating Engine](#templating-engine)
+- [Create an app from scratch](reate-an-app-from-scratch)
 
 ## About
 
@@ -46,13 +48,30 @@ The development server will start on `http://localhost:8000/`, and you can start
 To define routes in your Enova application, you can use the `app.get()`, `app.post()`, `app.put()`, and `app.delete()` methods. For example:
 
 ```javascript
-app.get("/", (req, res) => {
+app.get("/", (req, res, enova) => {
   res.send("Hello, Enova!");
 });
 
-app.post("/login", (req, res) => {
+app.post("/login", (req, res, enova) => {
   // Handle login logic
 });
+```
+
+Here `enova` is an object where you can store functions or other things, Which will be available to the whole application.
+Like `matchPassword()` can be available to whole application.
+
+```javascript
+app.get("/", (req, res, enova) => {
+  enova.matchPassword(pass1, pass1){
+    if(pass1 === pass2){
+        return true;
+    }
+    return false;
+  }
+  res.send("Hello, Enova!");
+});
+
+
 ```
 
 ### Handling Route Parameters and Query Parameters
@@ -71,16 +90,47 @@ app.get("/search", (req, res) => {
 });
 ```
 
-### Middleware
+### Plugin
 
-Enova supports middleware, which allows you to execute code before processing a request or after processing a request. You can use middleware to perform tasks such as authentication, logging, and error handling. For example:
+Plugins offer a versatile solution for accomplishing various tasks, akin to middleware, but with added flexibility and enhanced capabilities.
 
 ```javascript
-app.use((req, res, next) => {
-  // Middleware code here
-  next(); // Call next to continue to the next middleware or route handler
-});
+function pluginOne(ctx) {
+  const { self, res } = ctx;
+  if (self.currentRoute === "/page") {
+    res.error("This error is comming from pluginOne!!");
+  }
+  // Perform other actions
+}
 ```
+
+It's easy to register a plugin to the app. For single plugin, pass the plugin to `registerPlugins()` function.
+For more then one plugin use an array `[plugin1,plugin2]`. Plugins runs in `first to last` order.
+
+```javascript
+app.registerPlugins([pluginOne]);
+```
+
+### Middleware
+
+Middleware is just a function like Callback, Its runs before the callback function. You cane use it for validation , authentication or othere purpose.
+
+```javascript
+function midOne(req, res, enova) {
+  console.log("This is from Middleware One");
+  // Perform other actions
+}
+```
+
+To use a Middleware:
+
+````javascript
+app.get("/", midOne, (req, res) => {
+  res.render("index.ejs", {
+    title: "Welcome to Enova",
+    message: "This route is using mid1",
+  });
+});```
 
 ### Assets
 
@@ -90,7 +140,7 @@ Default assets folder is "/public", but you can change it as needed:
 app.register("assetsFolder", {
   path: "your_assets_folder_name",
 });
-```
+````
 
 ### Templating Engine
 
@@ -119,7 +169,7 @@ That's it! You now have a powerful web framework at your disposal to build web a
 
 Happy coding with Enova!
 
-## Create an app
+## Create an app from scratch
 
 ```javascript
 import Enova from enova
