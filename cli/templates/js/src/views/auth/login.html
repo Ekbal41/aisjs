@@ -1,0 +1,42 @@
+{% extends "src/views/layout.html" %} {% block content %}
+<section class="text-gray-600 body-font">
+  <div
+    class="container mx-auto flex flex-col px-5 py-24 justify-center items-center mt-28"
+  >
+    <div class="w-full md:w-2/3 flex flex-col mb-16 items-center text-center">
+      <h1
+        class="title-font sm:text-4xl text-3xl mb-4 font-medium text-gray-900"
+      >
+        Enova Framework(Login)
+      </h1>
+      <p class="mb-8 leading-relaxed lg:w-3/5">
+        Kickstarter biodiesel roof party wayfarers cold-pressed. Palo santo
+        live-edge tumeric scenester copper mug flexitarian. Prism vice offal
+        plaid everyday carry. Gluten-free chia VHS squid listicle artisan.
+      </p>
+
+      <div class="flex">
+        <button
+          class="bg-gray-100 inline-flex py-3 px-5 rounded-lg items-center hover:bg-gray-200 focus:outline-none"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="w-6 h-6"
+          >
+            <path
+              d="M11.25 4.533A9.707 9.707 0 006 3a9.735 9.735 0 00-3.25.555.75.75 0 00-.5.707v14.25a.75.75 0 001 .707A8.237 8.237 0 016 18.75c1.995 0 3.823.707 5.25 1.886V4.533zM12.75 20.636A8.214 8.214 0 0118 18.75c.966 0 1.89.166 2.75.47a.75.75 0 001-.708V4.262a.75.75 0 00-.5-.707A9.735 9.735 0 0018 3a9.707 9.707 0 00-5.25 1.533v16.103z"
+            />
+          </svg>
+
+          <span class="ml-4 flex items-start flex-col leading-none">
+            <span class="text-xs text-gray-600 mb-1">Learn From</span>
+            <span class="title-font font-medium">Documentation</span>
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

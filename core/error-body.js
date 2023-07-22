@@ -110,8 +110,8 @@
 
 // module.exports = ErorrBody;
 
-function ErrorBody(err, msg) {
-  const formattedStack = err.stack.replace(/\n/g, "<br>");
+function ErrorBody(err = "", msg = "") {
+  const formattedStack = err !== "" ? err.stack.replace(/\n/g, "<br>") : "";
 
   return `
   <!DOCTYPE html>
@@ -164,7 +164,8 @@ function ErrorBody(err, msg) {
       <div class="container">
         <h1 class="title">${msg}</h1>
        <p class="stack">
-       ${formattedStack || ""}</p>
+       ${formattedStack}
+       </p>
       </div>
     </body>
   </html>

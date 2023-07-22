@@ -1,7 +1,5 @@
 const Enova = require("../../../../index.js");
-const rootRoutes = require("./routes/root.js");
-const authRoutes = require("./routes/auth/index.js");
-const simpleAuth = require("./plugins/simpleAuth.js");
+
 //Initialize Enova
 const app = new Enova();
 
@@ -19,11 +17,12 @@ const app = new Enova();
 //   config: {}, //options for the view engine
 // });
 
-// Register routes here
-app.route(rootRoutes);
-app.route(authRoutes, "auth");
+app.get("/", (req, res) => {
+  const title = "Default Nunjucks Template";
+  res.render("src/views/welcome.html", { title });
+});
 
 // For any custom Plugins, Register here
-app.plugin([simpleAuth]);
+// app.registerPlugins([TestPlugin]);
 
 app.start(8000);

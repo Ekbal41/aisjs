@@ -17,12 +17,15 @@ const ResponseSender = async (ctx) => {
           handleMethods(res, req, method);
           await mid(req, res, enova);
         } else {
-          res.erorr(`
+          res.error(
+            "",
+            `
           Requested ${req.method} method not supported on this route! </br>
-          Erorr in Middlewire ${mid.name || "_______"} on Route ${
-            currentRoute.path || "_______"
-          } .
-          `);
+          Error in Middlewire ${mid.name || "_______"} on Route ${
+              currentRoute.path || "_______"
+            } .
+          `
+          );
         }
       } catch (err) {
         console.log(`
@@ -30,14 +33,15 @@ const ResponseSender = async (ctx) => {
           mid.name || "_______"
         )}> on Route <${magenta(currentRoute.path || "_______")}> . ${err}
           `);
-        res.erorr(
+        res.error(
           err,
-          (msg = `Erorr in Middlewire ${mid.name || "_______"} on Route ${
+          (msg = `Error in Middlewire ${mid.name || "_______"} on Route ${
             currentRoute.path || "_______"
           }`)
         );
       }
     }
+    // console.log(req.method, method)
 
     try {
       if (req.method === method) {
@@ -49,10 +53,12 @@ const ResponseSender = async (ctx) => {
         }
         await callback(req, res, enova);
       } else {
-        res.erorr(`
-        Requested ${req.method} method not supported on this route! </br>
-        Erorr in Callback of Route ${currentRoute.path || "_______"} .
-        `);
+        res.error(
+          "",
+          `Requested ${req.method} method not supported on this route! </br>
+           Error in Callback of Route ${currentRoute.path || "_______"} .
+           `
+        );
       }
     } catch (err) {
       console.log(`
@@ -60,9 +66,9 @@ const ResponseSender = async (ctx) => {
         currentRoute.path || "_______"
       )}> Callback . ${err}
       `);
-      res.erorr(
+      res.error(
         err,
-        (msg = `Erorr in Route ${currentRoute.path || "_______"} callback`)
+        (msg = `Error in Route ${currentRoute.path || "_______"} callback`)
       );
     }
   }
@@ -72,10 +78,13 @@ const ResponseSender = async (ctx) => {
       serveStaticFile(req, res);
     } else {
       res.statusCode = 404;
-      res.end(`
-      ${req.url} not found on this server!
+      res.error(
+        "",
+        `
+      ${req.url} not found on this server! </br>
       Make sure you have registered the route.
-      `);
+      `
+      );
     }
   }
 };

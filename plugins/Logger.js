@@ -1,7 +1,10 @@
 const { yellow, green, blue, cyan, red, magenta, white } = require("colorette");
 
 const Logger = (ctx) => {
-  let pluginCount = ctx.self.plugins.length;
+  let pluginCount =
+    ctx.self.firstToRunPlugins.length +
+    ctx.self.lastToRunPlugins.length +
+    ctx.self.externalPlugins.length;
   const { req, res } = ctx;
   const startTime = new Date();
   res.on("finish", () => {

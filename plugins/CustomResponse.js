@@ -1,4 +1,4 @@
-const ErrorBody = require("../core/erorr-body");
+const ErrorBody = require("../core/error-body");
 
 /**
  * Plugin for customizing res methods.
@@ -34,7 +34,7 @@ const CustomResponse = (ctx) => {
       );
       return ctx.res.end();
     };
-    ctx.res.erorr = (err, msg) => {
+    ctx.res.error = (err, msg) => {
       return ctx.res.end(ErrorBody(err, msg));
     };
   }

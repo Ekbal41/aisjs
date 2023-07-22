@@ -1,5 +1,6 @@
 const http = require("http");
 const { cyan, red, magenta } = require("colorette");
+const runPlugin = require("./plugin-runner.js");
 const Logger = require("../plugins/Logger");
 const ParamsAndQueryParser = require("../plugins/ParamsAndQueryParser");
 const ResponseSender = require("../plugins/ResponseSender");
@@ -9,34 +10,20 @@ class Enova {
   constructor() {
     this.server = http.createServer(this.handleRequest.bind(this));
     this.httpRequests = [];
-    this.plugins = [];
+    this.firstToRunPlugins = [];
+    this.lastToRunPlugins = [];
+    this.externalPlugins = [];
     this.defaultPlugins();
     this.viewEngine = null;
     this.assetsFolder = "public";
   }
 
   /**
-   * Register plugins to be used by the server.
-   * @param {Array|object} plugins - An array or single plugin to register.
-   */
-  registerPlugins(plugins) {
-    if (Array.isArray(plugins)) {
-      this.plugins.push(...plugins);
-    } else {
-      this.plugins.push(plugins);
-    }
-  }
-  /**
    * Register the default plugins.
    */
   defaultPlugins() {
-    this.registerPlugins([
-      Logger,
-      CustomResponse,
-      RegisterHandler,
-      ParamsAndQueryParser,
-      ResponseSender, // always leve this at the end
-    ]);
+    this.firstToRunPlugins = [Logger, CustomResponse, RegisterHandler];
+    this.lastToRunPlugins = [ParamsAndQueryParser, ResponseSender];
   }
   /**
    * Register a specific plugin by name.
@@ -72,24 +59,9 @@ class Enova {
       currentRoute: null,
     };
 
-    this.plugins.forEach(async (plugin) => {
-      let pluginName = plugin.name;
-      if (!pluginName) {
-        console.log(`
-        ${red("Error")} : Plugin must be a named function.
-        `);
-      }
-
-      try {
-        await plugin(ctx);
-      } catch (err) {
-        console.log(`
-        ${red("Error")} in scope of <${magenta(
-          plugin.name || "_______"
-        )}> Plugin. ${err}
-        `);
-      }
-    });
+    runPlugin(this.firstToRunPlugins, ctx);
+    runPlugin(this.externalPlugins, ctx);
+    runPlugin(this.lastToRunPlugins, ctx);
   }
   /**
    * Register a route with a callback function.
@@ -97,7 +69,7 @@ class Enova {
    * @param {string} method - The HTTP method of the route.
    * @param {string} path - The path of the route.
    */
-  route(method, path, mids, callback) {
+  addRoute(method, path, mids, callback) {
     this.httpRequests.push({
       method,
       path,
@@ -129,22 +101,56 @@ class Enova {
     }
     this.assetsFolder = path;
   }
+  /**
+   * Register plugins to be used by the server.
+   * @param {Array|object} plugins - An array or single plugin to register.
+   */
+  plugin(plgn) {
+    if (Array.isArray(plgn)) {
+      this.externalPlugins.push(...plgn);
+    } else {
+      this.externalPlugins.push(plgn);
+    }
+  }
+
+  route(routeGroup, prefix) {
+    routeGroup.forEach((route) => {
+      const { method, path, mids, callback } = route;
+      let prefixedPath = "";
+      if (!prefix) {
+        prefixedPath = path;
+      } else if (path === "/") {
+        if (prefix.startsWith("/")) {
+          prefixedPath = prefix;
+        } else {
+          prefixedPath = "/" + prefix;
+        }
+      } else {
+        if (prefix.startsWith("/")) {
+          prefixedPath = prefix + path;
+        } else {
+          prefixedPath = "/" + prefix + path;
+        }
+      }
+      this.addRoute(method, prefixedPath, mids, callback);
+    });
+  }
 
   get(path, ...mids) {
     const callback = mids.pop();
-    this.route("GET", path, mids, callback);
+    this.addRoute("GET", path, mids, callback);
   }
   post(path, ...mids) {
     const callback = mids.pop();
-    this.route("POST", path, mids, callback);
+    this.addRoute("POST", path, mids, callback);
   }
   delete(path, ...mids) {
     const callback = mids.pop();
-    this.route("DELETE", path, mids, callback);
+    this.addRoute("DELETE", path, mids, callback);
   }
   update(path, ...mids) {
     const callback = mids.pop();
-    this.route("UPDATE", path, mids, callback);
+    this.addRoute("UPDATE", path, mids, callback);
   }
   /**
    * Start the server and listen on the specified port.

@@ -8,7 +8,7 @@ const RegistersHandler = async (ctx) => {
   const viewEngine = self.viewEngine;
   if (viewEngine !== undefined && viewEngine !== null) {
     if (!viewEngine.name || !viewEngine.engine) {
-      res.erorr(`
+      res.error(`
       - Invalid view engine registration. </br>
       - Please provide a name and an engine.
       `);
@@ -22,7 +22,6 @@ const RegistersHandler = async (ctx) => {
           }
         } catch (err) {
           console.log(`Error in view engine ${viewEngine.name}: `, err);
-          
         }
       };
     }
@@ -32,15 +31,9 @@ const RegistersHandler = async (ctx) => {
         res.end(nunjucks.render(view, data));
       } catch (err) {
         console.log("Error in nunjucks render: ", err);
-        
       }
     };
   }
-
-  //Registering other things
-  ctx.enova.jwtToken = (tok) => {
-    console.log(`Your token is here${tok}`);
-  };
 };
 
 module.exports = RegistersHandler;
