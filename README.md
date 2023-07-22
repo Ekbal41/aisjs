@@ -108,7 +108,7 @@ It's easy to register a plugin to the app. For single plugin, pass the plugin to
 For more then one plugin use an array `[plugin1,plugin2]`. Plugins runs in `first to last` order.
 
 ```javascript
-app.registerPlugins([pluginOne]);
+app.plugin([pluginOne]);
 ```
 
 ### Middleware
