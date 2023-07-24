@@ -2,8 +2,7 @@ const prisma = require("../db/prismaClient.js");
 // Login-----------------------------------------------------------
 
 function loginView(req, res) {
-  const message = decodeURIComponent(req.query.message);
-  res.render("src/views/auth/login.html", { message });
+  res.render("src/views/auth/login.html", { message: req.message });
 }
 
 async function loginHandler(req, res, { simpleAuth }) {

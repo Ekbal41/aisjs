@@ -6,6 +6,7 @@ const ParamsAndQueryParser = require("../plugins/ParamsAndQueryParser");
 const ResponseSender = require("../plugins/ResponseSender");
 const CustomResponse = require("../plugins/CustomResponse");
 const RegisterHandler = require("../plugins/RegisterHandler");
+const DirectToMessage = require("../plugins/DirectToMessage");
 class Enova {
   constructor() {
     this.server = http.createServer(this.handleRequest.bind(this));
@@ -23,7 +24,11 @@ class Enova {
    */
   defaultPlugins() {
     this.firstToRunPlugins = [Logger, CustomResponse, RegisterHandler];
-    this.lastToRunPlugins = [ParamsAndQueryParser, ResponseSender];
+    this.lastToRunPlugins = [
+      ParamsAndQueryParser,
+      DirectToMessage,
+      ResponseSender,
+    ];
   }
   /**
    * Register a specific plugin by name.
