@@ -11,7 +11,19 @@
   </head>
   <body>
     <div class="">
-      <div class="">{% block content %}{% endblock %}</div>
+      <header class="text-gray-600 body-font">
+        <div
+          class="container mx-auto flex flex-wrap px-20 py-5 flex-col md:flex-row items-center"
+        >
+          <a
+          href="/"
+            class="flex title-font font-medium items-center text-gray-900 my-4 md:mb-0"
+          >
+            <span class=" text-xl">Enova Notes</span>
+          </a>
+        </div>
+      </header>
+      <div class="container mx-auto px-20">{% block content %}{% endblock %}</div>
     </div>
   </body>
 </html>

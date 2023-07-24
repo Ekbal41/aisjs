@@ -3,6 +3,7 @@ const {
   loginView,
   registerView,
   registerHandler,
+  logoutHandler,
 } = require("../../handlers/auth.js");
 
 const authRoutes = [
@@ -29,6 +30,12 @@ const authRoutes = [
     path: "/register-post",
     mids: [],
     callback: registerHandler,
+  },
+  {
+    method: "GET",
+    path: "/logout",
+    mids: [],
+    callback: logoutHandler,
   },
 ];
 module.exports = authRoutes;

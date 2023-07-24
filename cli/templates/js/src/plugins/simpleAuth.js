@@ -22,17 +22,26 @@ function simpleAuth({ enova, res, req }) {
     res.setHeader("Set-Cookie", cookieString);
   };
 
+  simpleAuth.removeToken = () => {
+    const cookieOptions = {
+      maxAge: 0,
+      httpOnly: true,
+      path: "/",
+    };
+    const cookieString = cookie.serialize("token", "", cookieOptions);
+    res.setHeader("Set-Cookie", cookieString);
+  };
+
   simpleAuth.getToken = cookie.parse(req.headers.cookie || "").token;
-  simpleAuth.decodeToken = (token, secret) => {
+  simpleAuth.decodedToken = (secret) => {
     try {
-      return jwt.verify(token, secret);
+      return jwt.verify(cookie.parse(req.headers.cookie || "").token, secret);
     } catch (err) {
       return false;
     }
   };
   simpleAuth.hashPassword = (password) => {
-    const salt = bcrypt.genSaltSync(10);
-    return bcrypt.hashSync(password, salt);
+    return bcrypt.hashSync(password, 10);
   };
 
   simpleAuth.verifyPassword = (password, hash) => {
