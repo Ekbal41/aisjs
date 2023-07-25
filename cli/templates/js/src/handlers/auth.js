@@ -2,7 +2,7 @@ const prisma = require("../db/prismaClient.js");
 // Login-----------------------------------------------------------
 
 function loginView(req, res) {
-  res.render("src/views/auth/login.html", { message: req.message });
+  res.render("src/views/auth/login.html", { feedback: req.feedback });
 }
 
 async function loginHandler(req, res, { simpleAuth }) {
@@ -18,7 +18,9 @@ async function loginHandler(req, res, { simpleAuth }) {
       simpleAuth.addToken({ email: email }, "secret", "1h");
     }
   }
-  res.directTo("/", "User logged in successfully.");
+  res.directTo("/", {
+    success: "User logged in successfully.",
+  });
 }
 
 // Register-----------------------------------------------------------
@@ -38,13 +40,13 @@ async function registerHandler(req, res, { simpleAuth }) {
       },
     });
   }
-  res.directTo("/auth", "User registered successfully.");
+  res.directTo("/auth", { success: "User registered successfully." });
 }
 
 // Logout-----------------------------------------------------------
 function logoutHandler(req, res, { simpleAuth }) {
   simpleAuth.removeToken();
-  res.directTo("/", "User logged out successfully.");
+  res.directTo("/", { success: "User logged out successfully." });
 }
 
 module.exports = {

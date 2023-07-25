@@ -17,11 +17,12 @@ const CustomResponse = (ctx) => {
       return ctx.res.end(JSON.stringify(data));
     };
 
-    ctx.res.directTo = (url, message) => {
+    ctx.res.directTo = (url, obj) => {
       ctx.res.statusCode = 302;
+      const jsonObj = JSON.stringify(obj);
       ctx.res.setHeader(
         "Location",
-        `${url}${message ? `?message=${message}` : ""}`
+        `${url}${jsonObj ? `?feedback=${jsonObj}` : ""}`
       );
       return ctx.res.end();
     };

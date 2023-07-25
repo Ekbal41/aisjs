@@ -3,7 +3,7 @@ function homeHandler(req, res, { simpleAuth }) {
   const title = "Enova Notes";
   res.render("src/views/home.html", {
     title,
-    message: req.message,
+    feedback: req.feedback,
     user: decodedToken.data,
   });
 }
