@@ -1,4 +1,5 @@
 const ErrorBody = require("../core/error-body");
+const cache = require("memory-cache");
 
 /**
  * Plugin for customizing res methods.
@@ -13,17 +14,15 @@ const CustomResponse = (ctx) => {
      * @returns {void}
      */
     ctx.res.json = (data) => {
+      cache.del("feedback");
       ctx.res.setHeader("Content-Type", "application/json");
       return ctx.res.end(JSON.stringify(data));
     };
 
     ctx.res.directTo = (url, obj) => {
       ctx.res.statusCode = 302;
-      const jsonObj = JSON.stringify(obj);
-      ctx.res.setHeader(
-        "Location",
-        `${url}${jsonObj ? `?feedback=${jsonObj}` : ""}`
-      );
+      cache.put("feedback", obj);
+      ctx.res.setHeader("Location", `${url}`);
       return ctx.res.end();
     };
     ctx.res.error = (err, msg) => {

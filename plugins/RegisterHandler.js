@@ -1,5 +1,6 @@
 const nunjucks = require("nunjucks");
 const fs = require("fs");
+const cache = require("memory-cache");
 
 const RegistersHandler = async (ctx) => {
   const { self } = ctx;
@@ -14,6 +15,7 @@ const RegistersHandler = async (ctx) => {
       `);
     } else {
       res.render = (view, data) => {
+        cache.del("feedback");
         try {
           const { name, engine, config } = viewEngine;
           if (name === "ejs") {
@@ -27,6 +29,7 @@ const RegistersHandler = async (ctx) => {
     }
   } else {
     res.render = (view, data) => {
+      cache.del("feedback");
       try {
         res.end(nunjucks.render(view, data));
       } catch (err) {
