@@ -1,5 +1,5 @@
-function homeHandler(req, res, { simpleAuth }) {
-  const decodedToken = simpleAuth.decodedToken("secret");
+function homeHandler(req, res, { eAuth }) {
+  const decodedToken = eAuth.getDecodedToken("secret");
   const title = "Enova Notes";
   res.render("src/views/home.html", {
     title,

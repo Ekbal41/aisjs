@@ -2,10 +2,9 @@ const jwt = require("jsonwebtoken");
 const cookie = require("cookie");
 const bcrypt = require("bcrypt");
 
-function simpleAuth({ enova, res, req }) {
-  let simpleAuth = {};
-
-  simpleAuth.addToken = (payload, secret, expiresIn) => {
+function eAuth({ enova, res, req }) {
+  let eAuth = {};
+  const storeToken = (payload, secret, expiresIn) => {
     const token = jwt.sign(
       {
         data: payload,
@@ -14,15 +13,14 @@ function simpleAuth({ enova, res, req }) {
       { expiresIn: expiresIn }
     );
     const cookieOptions = {
-      maxAge: 7 * 24 * 60 * 60, // 7 days in seconds
+      maxAge: expiresIn,
       httpOnly: true,
       path: "/",
     };
     const cookieString = cookie.serialize("token", token, cookieOptions);
     res.setHeader("Set-Cookie", cookieString);
   };
-
-  simpleAuth.removeToken = () => {
+  const removeToken = () => {
     const cookieOptions = {
       maxAge: 0,
       httpOnly: true,
@@ -32,22 +30,31 @@ function simpleAuth({ enova, res, req }) {
     res.setHeader("Set-Cookie", cookieString);
   };
 
-  simpleAuth.getToken = cookie.parse(req.headers.cookie || "").token;
-  simpleAuth.decodedToken = (secret) => {
+  const getDecodedToken = (secret) => {
     try {
       return jwt.verify(cookie.parse(req.headers.cookie || "").token, secret);
     } catch (err) {
       return false;
     }
   };
-  simpleAuth.hashPassword = (password) => {
+  const getRawToken = () => {
+    return cookie.parse(req.headers.cookie || "").token;
+  };
+
+  const hashPassword = (password) => {
     return bcrypt.hashSync(password, 10);
   };
 
-  simpleAuth.verifyPassword = (password, hash) => {
+  const verifyPassword = (password, hash) => {
     return bcrypt.compareSync(password, hash);
   };
-  enova.simpleAuth = simpleAuth;
+  eAuth.storeToken = storeToken;
+  eAuth.removeToken = removeToken;
+  eAuth.getDecodedToken = getDecodedToken;
+  eAuth.getRawToken = getRawToken;
+  eAuth.hashPassword = hashPassword;
+  eAuth.verifyPassword = verifyPassword;
+  enova.eAuth = eAuth;
 }
 
-module.exports = simpleAuth;
+module.exports = eAuth;

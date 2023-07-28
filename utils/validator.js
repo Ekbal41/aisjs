@@ -1,4 +1,4 @@
-function validate(argsObj, validationRules) {
+ function validate(argsObj, validationRules) {
   const errors = {};
 
   for (const argName in argsObj) {
@@ -15,7 +15,8 @@ function validate(argsObj, validationRules) {
         : undefined;
 
       if (!argValue) {
-        if (validationRule.message && !validationRule.validator) {
+        errors[argName] = `${capArgName} is required.`;
+        if (validationRule?.message && !validationRule?.validator) {
           errors[argName] = validationRule.message;
         } else {
           errors[argName] = `${capArgName} is required.`;

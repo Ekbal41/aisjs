@@ -1,7 +1,7 @@
 const Enova = require("../../../../index.js");
 const rootRoutes = require("./routes/root.js");
 const authRoutes = require("./routes/auth/index.js");
-const simpleAuth = require("./plugins/simpleAuth.js");
+const eAuth = require("./plugins/eAuth.js");
 //Initialize Enova
 const app = new Enova();
 
@@ -24,6 +24,6 @@ app.route(rootRoutes);
 app.route(authRoutes, "auth");
 
 // For any custom Plugins, Register here
-app.plugin([simpleAuth]);
+app.plugin([eAuth]);
 
 app.start(8000);
