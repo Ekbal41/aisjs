@@ -1,5 +1,8 @@
 const enova = require("./core/enova");
-const validate = require("./utils/validator");
+const validateAsync = require("./utils/validateAsync");
+const validate = require("./utils/validate");
+
 module.exports = enova;
 exports = module.exports;
 exports.validate = validate;
+exports.validateAsync = validateAsync;

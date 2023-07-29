@@ -1,5 +1,16 @@
- function validate(argsObj, validationRules) {
+async function validateAsync(argsObj, validationRules) {
   const errors = {};
+
+  async function runValidatorAsync(validator, value) {
+    try {
+      const isValid = await validator(value);
+      return isValid;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  const validationPromises = [];
 
   for (const argName in argsObj) {
     const argValue = argsObj[argName];
@@ -10,9 +21,7 @@
         errors[argName] = `${capArgName} is required.`;
       }
     } else {
-      const validationRule = validationRules
-        ? validationRules[argName]
-        : undefined;
+      const validationRule = validationRules[argName];
 
       if (!argValue) {
         errors[argName] = `${capArgName} is required.`;
@@ -23,14 +32,23 @@
         }
       } else if (validationRule) {
         const { validator, message } = validationRule;
-        if (validator && !validator(argValue)) {
-          errors[argName] = message || `${capArgName} is invalid.`;
+
+        if (validator) {
+          validationPromises.push(
+            runValidatorAsync(validator, argValue).then((isValid) => {
+              if (!isValid) {
+                errors[argName] = message || `${capArgName} is invalid.`;
+              }
+            })
+          );
         }
       }
     }
   }
 
+  await Promise.all(validationPromises);
+
   if (Object.keys(errors).length > 0) return errors;
   return false;
 }
-module.exports = validate;
+module.exports = validateAsync;

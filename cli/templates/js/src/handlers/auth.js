@@ -1,5 +1,5 @@
 const prisma = require("../db/prismaClient.js");
-const { validate } = require("../../../../../index.js");
+const { validate, validateAsync } = require("../../../../../index.js");
 // Login-----------------------------------------------------------
 
 function loginView(req, res) {
@@ -16,6 +16,7 @@ async function loginHandler(req, res, { eAuth }) {
       message: "Password must be at least 6 characters long.",
     },
   });
+  console.log(error);
   if (error) {
     res.directTo("/auth", error);
     return;
@@ -29,15 +30,13 @@ async function loginHandler(req, res, { eAuth }) {
   if (user) {
     const isPasswordValid = eAuth.verifyPassword(password, user.password);
     if (isPasswordValid) {
-      eAuth.storeToken(
-        (payload = {
+      eAuth.storeToken({
+        payload: {
           email: user.email,
-          role: "Admin",
-        }),
-        (sercret = "secret"),
-        (expiresIn = 60 * 60 * 24 * 7),
-        (path = "/")
-      );
+        },
+        secret: "secret",
+        expiresIn: 60 * 60 * 24 * 7,
+      });
     } else {
       res.directTo("/auth", {
         error: "Wrong credentials.",
@@ -59,7 +58,21 @@ function registerView(req, res) {
 async function registerHandler(req, res, { eAuth }) {
   const { email, password, password2 } = req.formData;
 
-  const error = validate(req.formData, {
+  const error = await validateAsync(req.formData, {
+    email: {
+      validator: async (email) => {
+        const emailRegistred = await prisma.user.findUnique({
+          where: {
+            email: email,
+          },
+        });
+        if (emailRegistred) {
+          return false;
+        }
+        return true;
+      },
+      message: "Email already registred.",
+    },
     password: {
       validator: (password) => password.length >= 4,
       message: "Password must be at least 6 characters long.",

@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 
 function eAuth({ enova, res, req }) {
   let eAuth = {};
-  const storeToken = (payload, secret, expiresIn) => {
+  const storeToken = ({ payload, secret, expiresIn }) => {
     const token = jwt.sign(
       {
         data: payload,
