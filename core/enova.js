@@ -24,11 +24,7 @@ class Enova {
    */
   defaultPlugins() {
     this.firstToRunPlugins = [Logger, CustomResponse, RegisterHandler];
-    this.lastToRunPlugins = [
-      ParamsAndQueryParser,
-      FeedBack,
-      ResponseSender,
-    ];
+    this.lastToRunPlugins = [ParamsAndQueryParser, FeedBack, ResponseSender];
   }
   /**
    * Register a specific plugin by name.
@@ -106,6 +102,7 @@ class Enova {
     }
     this.assetsFolder = path;
   }
+
   /**
    * Register plugins to be used by the server.
    * @param {Array|object} plugins - An array or single plugin to register.

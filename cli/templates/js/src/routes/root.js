@@ -7,5 +7,6 @@ const rootRoutes = [
     mids: [],
     callback: homeHandler,
   },
+
 ];
 module.exports = rootRoutes;
