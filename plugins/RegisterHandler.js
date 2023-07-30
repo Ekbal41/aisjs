@@ -1,12 +1,10 @@
 const nunjucks = require("nunjucks");
 const fs = require("fs");
 const cache = require("memory-cache");
-const path = require("path");
 
 const RegistersHandler = async (ctx) => {
-  const directToObjName = "feedback";
   const { self } = ctx;
-  //Registering 
+  //Registering others
   const res = ctx.res;
   const viewEngine = self.viewEngine;
   if (viewEngine !== undefined && viewEngine !== null) {
@@ -17,7 +15,7 @@ const RegistersHandler = async (ctx) => {
       `);
     } else {
       res.render = (view, data) => {
-        cache.del(directToObjName);
+        cache.del("feedback");
         try {
           const { name, engine, config } = viewEngine;
           if (name === "ejs") {
@@ -31,7 +29,7 @@ const RegistersHandler = async (ctx) => {
     }
   } else {
     res.render = (view, data) => {
-      cache.del(directToObjName);
+      cache.del("feedback");
       try {
         res.end(nunjucks.render(view, data));
       } catch (err) {

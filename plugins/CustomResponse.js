@@ -7,7 +7,6 @@ const cache = require("memory-cache");
  * @param {function} next - The next plugin function.
  */
 const CustomResponse = (ctx) => {
-  const directToObjName = "feddback";
   if (ctx.res) {
     /**
      * Sends a JSON res.
@@ -15,14 +14,14 @@ const CustomResponse = (ctx) => {
      * @returns {void}
      */
     ctx.res.json = (data) => {
-      cache.del(directToObjName);
+      cache.del("feedback");
       ctx.res.setHeader("Content-Type", "application/json");
       return ctx.res.end(JSON.stringify(data));
     };
 
     ctx.res.directTo = (url, obj) => {
       ctx.res.statusCode = 302;
-      cache.put(directToObjName, obj);
+      cache.put("feedback", obj);
       ctx.res.setHeader("Location", `${url}`);
       return ctx.res.end();
     };
