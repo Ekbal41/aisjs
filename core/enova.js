@@ -49,6 +49,7 @@ class Enova {
    * @param {http.IncomingMessage} req - The incoming req object.
    * @param {http.ServerResponse} res - The server res object.
    */
+
   async handleRequest(req, res) {
     const ctx = {
       req,
@@ -64,6 +65,7 @@ class Enova {
     runPlugin(this.externalPlugins, ctx);
     runPlugin(this.lastToRunPlugins, ctx);
   }
+
   /**
    * Register a route with a callback function.
    * @param {string} pathname - The pathname of the route.
@@ -115,9 +117,10 @@ class Enova {
     }
   }
 
-  route(routeGroup, prefix) {
+  router(routerFile, prefix) {
+    const routeGroup = routerFile.routerHttpRequests;
     routeGroup.forEach((route) => {
-      const { method, path, mids, callback } = route;
+      const { method, path, mids = [], callback } = route;
       let prefixedPath = "";
       if (!prefix) {
         prefixedPath = path;

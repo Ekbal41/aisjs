@@ -9,69 +9,54 @@ const ResponseSender = async (ctx) => {
   const assetsFolder = self.assetsFolder.startsWith("/")
     ? self.assetsFolder
     : "/" + self.assetsFolder;
+  let currentIndex = 0;
+
   if (routeMatched) {
     const { method, mids, callback } = currentRoute;
-    for (const mid of mids) {
-      try {
-        if (req.method === method) {
-          handleMethods(res, req, method);
-          await mid(req, res, enova);
-        } else {
+    if (req.method === method) {
+      if (mids.length > 0) {
+        const next = async () => {
+          currentIndex++;
+          if (currentIndex < mids.length) {
+            handleMethods(req, res, method);
+            await mids[currentIndex](req, res, next, enova);
+          } else {
+            handleMethods(req, res, method);
+            if (req.method === "POST" || req.method === "UPDATE") {
+              const requestBody = await collectRequestBody(req);
+              const data = Object.fromEntries(new URLSearchParams(requestBody));
+              req.formData = data;
+            }
+            await callback(req, res, enova);
+          }
+        };
+        try {
+          mids[0](req, res, next, enova);
+        } catch (err) {
+          console.log(red(err.stack));
           res.error(
-            "",
+            err,
+            `There was an error in the middleware [${mids[currentIndex].name}] on route ${currentRoute.path}
             `
-          Requested ${req.method} method not supported on this route! </br>
-          Error in Middlewire ${mid.name || "_______"} on Route ${
-              currentRoute.path || "_______"
-            } .
-          `
           );
         }
-      } catch (err) {
-        console.log(`
-            ${red("Error")} in Middlewire <${magenta(
-          mid.name || "_______"
-        )}> on Route <${magenta(currentRoute.path || "_______")}> . ${err}
-          `);
-        res.error(
-          err,
-          (msg = `Error in Middlewire ${mid.name || "_______"} on Route ${
-            currentRoute.path || "_______"
-          }`)
-        );
-      }
-    }
-    // console.log(req.method, method)
-
-    try {
-      if (req.method === method) {
-        handleMethods(res, req, method);
+      } else {
+        handleMethods(req, res, method);
         if (req.method === "POST" || req.method === "UPDATE") {
           const requestBody = await collectRequestBody(req);
           const data = Object.fromEntries(new URLSearchParams(requestBody));
           req.formData = data;
         }
         await callback(req, res, enova);
-      } else {
-        res.error(
-          "",
-          `Requested ${req.method} method not supported on this route! </br>
-           Error in Callback of Route ${currentRoute.path || "_______"} .
-           `
-        );
       }
-    } catch (err) {
-      console.log(`
-        ${red("Error")} in Route <${magenta(
-        currentRoute.path || "_______"
-      )}> Callback . ${err}
-      `);
+    } else {
       res.error(
-        err,
-        (msg = `Error in Route ${currentRoute.path || "_______"} callback`)
+        "",
+        `Requested ${req.method} method not supported on this route!`
       );
     }
   }
+
   if (!routeMatched) {
     const isAssetPath = req.url.startsWith(assetsFolder);
     if (isAssetPath) {
@@ -121,3 +106,66 @@ const serveStaticFile = (req, res) => {
   });
 };
 module.exports = ResponseSender;
+
+// if (routeMatched) {
+//   const { method, mids, callback } = currentRoute;
+//   for (const mid of mids) {
+//     try {
+//       if (req.method === method) {
+//         handleMethods(req, res, method);
+//         await mid(req, res, enova);
+//       } else {
+//         res.error(
+//           "",
+//           `
+//         Requested ${req.method} method not supported on this route! </br>
+//         Error in Middlewire ${mid.name || "_______"} on Route ${
+//             currentRoute.path || "_______"
+//           } .
+//         `
+//         );
+//       }
+//     } catch (err) {
+//       console.log(`
+//           ${red("Error")} in Middlewire <${magenta(
+//         mid.name || "_______"
+//       )}> on Route <${magenta(currentRoute.path || "_______")}> . ${err}
+//         `);
+//       res.error(
+//         err,
+//         (msg = `Error in Middlewire ${mid.name || "_______"} on Route ${
+//           currentRoute.path || "_______"
+//         }`)
+//       );
+//     }
+//   }
+
+//   try {
+//     if (req.method === method) {
+//       handleMethods(req, res, method);
+//       if (req.method === "POST" || req.method === "UPDATE") {
+//         const requestBody = await collectRequestBody(req);
+//         const data = Object.fromEntries(new URLSearchParams(requestBody));
+//         req.formData = data;
+//       }
+//       await callback(req, res, enova);
+//     } else {
+//       res.error(
+//         "",
+//         `Requested ${req.method} method not supported on this route! </br>
+//          Error in Callback of Route ${currentRoute.path || "_______"} .
+//          `
+//       );
+//     }
+//   } catch (err) {
+//     console.log(`
+//       ${red("Error")} in Route <${magenta(
+//       currentRoute.path || "_______"
+//     )}> Callback . ${err}
+//     `);
+//     res.error(
+//       err,
+//       (msg = `Error in Route ${currentRoute.path || "_______"} callback`)
+//     );
+//   }
+// }

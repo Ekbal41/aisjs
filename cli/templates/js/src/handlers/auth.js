@@ -16,7 +16,6 @@ async function loginHandler(req, res, { eAuth }) {
       message: "Password must be at least 6 characters long.",
     },
   });
-  console.log(error);
   if (error) {
     res.directTo("/auth", error);
     return;

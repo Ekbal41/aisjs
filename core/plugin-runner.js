@@ -8,16 +8,14 @@ function runPlugin(pluginObj, ctx) {
           ${red("Error")} : Plugin must be a named function.
           `);
     }
+    await plugin(ctx);
 
-    try {
-      await plugin(ctx);
-    } catch (err) {
-      console.log(`
-          ${red("Error")} in scope of <${magenta(
-        plugin.name || "_______"
-      )}> Plugin. ${err}
-          `);
-    }
+    // try {
+    //   await plugin(ctx);
+    // } catch (err) {
+    //   console.log(err.stack);
+    //   ctx.res.error(err, (msg = `Error in Plugin ${pluginName || "_______"}`));
+    // }
   });
 }
 

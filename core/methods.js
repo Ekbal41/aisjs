@@ -1,4 +1,4 @@
-const handleMethods = async (res, req, method) => {
+const handleMethods = async (req, res, method) => {
   switch (method) {
     case "GET":
       res.statusCode = 200;

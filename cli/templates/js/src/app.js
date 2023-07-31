@@ -1,9 +1,22 @@
 const Enova = require("../../../../index.js");
-const rootRoutes = require("./routes/root.js");
-const authRoutes = require("./routes/auth/index.js");
 const eAuth = require("./plugins/eAuth.js");
+const AuthRouter = require("./routes/AuthRouter.js");
+const RootRouter = require("./routes/RootRouter.js");
+
 //Initialize Enova
 const app = new Enova();
+
+// Register routes here
+app.router(RootRouter);
+app.router(AuthRouter, "/auth");
+
+// For any custom Plugins, Register here
+app.plugin([eAuth]);
+
+//Start the server on port 8000
+app.start(8000);
+
+//OTHER CONFIGURATIONS
 
 //Default assets folder is set to public
 // app.register("assetsFolder", {
@@ -18,12 +31,3 @@ const app = new Enova();
 //   engine: view_emgine,
 //   config: {}, //options for the view engine
 // });
-
-// Register routes here
-app.route(rootRoutes);
-app.route(authRoutes, "auth");
-
-// For any custom Plugins, Register here
-app.plugin([eAuth]);
-
-app.start(8000);
