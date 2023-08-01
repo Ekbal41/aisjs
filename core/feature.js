@@ -1,15 +1,20 @@
-class Router {
+class Feature {
   constructor() {
-    this.routerHttpRequests = [];
+    this.featureHttpRequests = [];
+    this.featureUrlPrefix = "";
   }
 
   addRoute(method, path, mids, callback) {
-    this.routerHttpRequests.push({
+    this.featureHttpRequests.push({
       method,
       path,
       mids,
       callback,
     });
+  }
+
+  urlPrefix(prefix) {
+    this.featureUrlPrefix = prefix;
   }
   get(path, ...mids) {
     const callback = mids.pop();
@@ -29,4 +34,4 @@ class Router {
   }
 }
 
-module.exports = Router;
+module.exports = Feature;

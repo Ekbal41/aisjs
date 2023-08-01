@@ -5,7 +5,7 @@
   "main": "src/app.js",
   "scripts": {
     "dev": "concurrently  \"npm run tailwind\" \"npm run start\"",
-    "start": "nodemon -e * app.js",
+    "start": "nodemon -e * src/app.js",
     "tailwind": "npx tailwindcss -i public/tailwind/input.css -o public/tailwind/tailwind.css --watch",
     "prisma": "npx prisma migrate dev --name init --preview-feature"
   },

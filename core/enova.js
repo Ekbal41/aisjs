@@ -109,7 +109,7 @@ class Enova {
    * Register plugins to be used by the server.
    * @param {Array|object} plugins - An array or single plugin to register.
    */
-  plugin(plgn) {
+  plugins(plgn) {
     if (Array.isArray(plgn)) {
       this.externalPlugins.push(...plgn);
     } else {
@@ -117,27 +117,33 @@ class Enova {
     }
   }
 
-  router(routerFile, prefix) {
-    const routeGroup = routerFile.routerHttpRequests;
-    routeGroup.forEach((route) => {
-      const { method, path, mids = [], callback } = route;
-      let prefixedPath = "";
-      if (!prefix) {
-        prefixedPath = path;
-      } else if (path === "/") {
-        if (prefix.startsWith("/")) {
-          prefixedPath = prefix;
+  features(registeredFeatures) {
+    const routeGroups = Array.isArray(registeredFeatures)
+      ? registeredFeatures
+      : [registeredFeatures];
+    routeGroups.forEach((group) => {
+      const routeGroup = group.featureHttpRequests;
+      const prefix = group.FeatureUrlPrefix;
+      routeGroup.forEach((route) => {
+        const { method, path, mids = [], callback } = route;
+        let prefixedPath = "";
+        if (!prefix) {
+          prefixedPath = path;
+        } else if (path === "/") {
+          if (prefix.startsWith("/")) {
+            prefixedPath = prefix;
+          } else {
+            prefixedPath = "/" + prefix;
+          }
         } else {
-          prefixedPath = "/" + prefix;
+          if (prefix.startsWith("/")) {
+            prefixedPath = prefix + path;
+          } else {
+            prefixedPath = "/" + prefix + path;
+          }
         }
-      } else {
-        if (prefix.startsWith("/")) {
-          prefixedPath = prefix + path;
-        } else {
-          prefixedPath = "/" + prefix + path;
-        }
-      }
-      this.addRoute(method, prefixedPath, mids, callback);
+        this.addRoute(method, prefixedPath, mids, callback);
+      });
     });
   }
 
@@ -161,11 +167,15 @@ class Enova {
    * Start the server and listen on the specified port.
    * @param {number} port - The port number to listen on.
    */
-  start(port) {
+  start(port, onStartMessage) {
     this.server.listen(port, () => {
-      console.log(
-        `🦉 Server is running on ${cyan("http://localhost:")}${cyan(port)}.`
-      );
+      if (onStartMessage) {
+        console.log(onStartMessage);
+      } else {
+        console.log(
+          `🦉 Server is running on ${cyan("http://localhost:")}${cyan(port)}.`
+        );
+      }
     });
   }
 }
