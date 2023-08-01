@@ -1,7 +1,7 @@
 ParamsAndQueryParser = (ctx) => {
   const { req, self } = ctx;
   let localCurrentRoute = "";
-  for (const route of self.httpRequests) {
+  for (const route of self.reqs) {
     const path = route.path?.toString();
     const regexPattern = urlToRegex(path);
     const regex = new RegExp(`^${regexPattern}(\\?.*)?$`);

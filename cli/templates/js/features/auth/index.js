@@ -1,13 +1,9 @@
-const { Feature } = require("../../../../../index.js");
+const { feature } = require("../../../../../index.js");
 const handler = require("./handler.js");
-const Auth = new Feature();
-
-Auth.urlPrefix("/auth");
-
-Auth.get("/login", handler.loginView);
-Auth.post("/login-post", handler.loginHandler);
-Auth.get("/register", handler.registerView);
-Auth.post("/register-post", handler.registerHandler);
-Auth.get("/logout", handler.logoutHandler);
-
-module.exports = Auth;
+module.exports = Auth = feature()
+  .prefix("/auth")
+  .get("/login", handler.loginView)
+  .post("/login-post", handler.loginHandler)
+  .get("/register", handler.registerView)
+  .post("/register-post", handler.registerHandler)
+  .get("/logout", handler.logoutHandler);

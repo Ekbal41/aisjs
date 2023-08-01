@@ -1,37 +1,39 @@
 class Feature {
-  constructor() {
-    this.featureHttpRequests = [];
-    this.featureUrlPrefix = "";
+  constructor(opts = {}) {
+    this.freqs = [];
+    this.fprefix = "";
+    this.addMethods();
+  }
+
+  addMethods() {
+    const httpMethods = ["GET", "POST", "DELETE", "UPDATE"];
+    for (const method of httpMethods) {
+      this.factory(method);
+    }
   }
 
   addRoute(method, path, mids, callback) {
-    this.featureHttpRequests.push({
+    this.freqs.push({
       method,
       path,
       mids,
       callback,
     });
+    return this;
   }
 
-  urlPrefix(prefix) {
-    this.featureUrlPrefix = prefix;
+  prefix(pfx) {
+    this.fprefix = pfx;
+    return this;
   }
-  get(path, ...mids) {
-    const callback = mids.pop();
-    this.addRoute("GET", path, mids, callback);
-  }
-  post(path, ...mids) {
-    const callback = mids.pop();
-    this.addRoute("POST", path, mids, callback);
-  }
-  delete(path, ...mids) {
-    const callback = mids.pop();
-    this.addRoute("DELETE", path, mids, callback);
-  }
-  update(path, ...mids) {
-    const callback = mids.pop();
-    this.addRoute("UPDATE", path, mids, callback);
+
+  factory(method) {
+    this[method.toLowerCase()] = (path, ...mids) => {
+      const callback = mids.pop();
+      this.addRoute(method, path, mids, callback);
+      return this;
+    };
   }
 }
 
-module.exports = Feature;
+module.exports = (opts) => new Feature(opts);

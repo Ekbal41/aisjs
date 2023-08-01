@@ -1,22 +1,16 @@
-const Enova = require("../../../index.js");
+const enova = require("../../../index.js");
 const eAuth = require("./plugins/eAuth");
 const Auth = require("./features/auth");
 const Root = require("./features/root");
+const Api = require("./features/api");
 
 //Initialize Enova
-const app = new Enova();
-
-// Register routes here
-// app.router(RootRouter);
-// app.router(AuthRouter);
-
-app.features([Root, Auth]);
-
-// For any custom Plugins, Register here
-app.plugins([eAuth]);
-
-//Start the server on port 8000
-app.start(8000);
+const app = enova()
+  .features([Root, Auth, Api])
+  .plugins([eAuth])
+  .listen(8000, () => {
+    console.log(` > Server started on Http://localhost:8000`);
+  });
 
 //OTHER CONFIGURATIONS
 

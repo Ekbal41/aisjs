@@ -8,33 +8,33 @@ const CustomResponse = require("../plugins/CustomResponse");
 const RegisterHandler = require("../plugins/RegisterHandler");
 const FeedBack = require("../plugins/FeedBack");
 class Enova {
-  constructor() {
-    this.server = http.createServer(this.handleRequest.bind(this));
-    this.httpRequests = [];
+  constructor(opts = {}) {
+    this.reqs = [];
     this.firstToRunPlugins = [];
     this.lastToRunPlugins = [];
     this.externalPlugins = [];
+    this.addMethods();
     this.defaultPlugins();
     this.viewEngine = null;
     this.assetsFolder = "public";
+    this.server = http.createServer(this.handleRequest.bind(this));
   }
 
-  /**
-   * Register the default plugins.
-   */
   defaultPlugins() {
     this.firstToRunPlugins = [Logger, CustomResponse, RegisterHandler];
     this.lastToRunPlugins = [ParamsAndQueryParser, FeedBack, ResponseSender];
   }
-  /**
-   * Register a specific plugin by name.
-   * @param {string} pluginName - The name of the plugin.
-   * @param {object} plugin - The plugin object.
-   */
+  addMethods() {
+    const httpMethods = ["GET", "POST", "DELETE", "UPDATE"];
+    for (const method of httpMethods) {
+      this.factory(method);
+    }
+  }
+
   register(pluginName, plugin) {
     switch (pluginName) {
       case "viewEngine":
-        this.registerViewEngine(plugin);
+        this.registerViewsEngine(plugin);
         break;
       case "assetsFolder":
         this.registerAssetsFolder(plugin);
@@ -43,12 +43,8 @@ class Enova {
       default:
         throw new Error(`Unknown plugin name: ${pluginName}`);
     }
+    return this;
   }
-  /**
-   * Handle incoming HTTP requests.
-   * @param {http.IncomingMessage} req - The incoming req object.
-   * @param {http.ServerResponse} res - The server res object.
-   */
 
   async handleRequest(req, res) {
     const ctx = {
@@ -66,14 +62,8 @@ class Enova {
     runPlugin(this.lastToRunPlugins, ctx);
   }
 
-  /**
-   * Register a route with a callback function.
-   * @param {string} pathname - The pathname of the route.
-   * @param {string} method - The HTTP method of the route.
-   * @param {string} path - The path of the route.
-   */
   addRoute(method, path, mids, callback) {
-    this.httpRequests.push({
+    this.reqs.push({
       method,
       path,
       mids,
@@ -81,11 +71,7 @@ class Enova {
     });
   }
 
-  /**
-   * Register the view engine plugin.
-   * @param {object} plugin - The view engine plugin configuration.
-   */
-  registerViewEngine(plugin) {
+  registerViewsEngine(plugin) {
     const { name, engine, config } = plugin;
     this.viewEngine = {
       name,
@@ -93,10 +79,7 @@ class Enova {
       config,
     };
   }
-  /**
-   * Register the assets folder plugin.
-   * @param {object} plugin - The assets folder plugin configuration.
-   */
+
   registerAssetsFolder(plugin) {
     const { path } = plugin;
     if (!path) {
@@ -105,25 +88,21 @@ class Enova {
     this.assetsFolder = path;
   }
 
-  /**
-   * Register plugins to be used by the server.
-   * @param {Array|object} plugins - An array or single plugin to register.
-   */
   plugins(plgn) {
     if (Array.isArray(plgn)) {
       this.externalPlugins.push(...plgn);
     } else {
       this.externalPlugins.push(plgn);
     }
+
+    return this;
   }
 
-  features(registeredFeatures) {
-    const routeGroups = Array.isArray(registeredFeatures)
-      ? registeredFeatures
-      : [registeredFeatures];
+  features(ftur) {
+    const routeGroups = Array.isArray(ftur) ? ftur : [ftur];
     routeGroups.forEach((group) => {
-      const routeGroup = group.featureHttpRequests;
-      const prefix = group.FeatureUrlPrefix;
+      const routeGroup = group.freqs;
+      const prefix = group.fprefix;
       routeGroup.forEach((route) => {
         const { method, path, mids = [], callback } = route;
         let prefixedPath = "";
@@ -145,39 +124,21 @@ class Enova {
         this.addRoute(method, prefixedPath, mids, callback);
       });
     });
+    return this;
   }
 
-  get(path, ...mids) {
-    const callback = mids.pop();
-    this.addRoute("GET", path, mids, callback);
+  factory(method) {
+    this[method.toLowerCase()] = (path, ...mids) => {
+      const callback = mids.pop();
+      this.addRoute(method, path, mids, callback);
+      return this;
+    };
   }
-  post(path, ...mids) {
-    const callback = mids.pop();
-    this.addRoute("POST", path, mids, callback);
-  }
-  delete(path, ...mids) {
-    const callback = mids.pop();
-    this.addRoute("DELETE", path, mids, callback);
-  }
-  update(path, ...mids) {
-    const callback = mids.pop();
-    this.addRoute("UPDATE", path, mids, callback);
-  }
-  /**
-   * Start the server and listen on the specified port.
-   * @param {number} port - The port number to listen on.
-   */
-  start(port, onStartMessage) {
-    this.server.listen(port, () => {
-      if (onStartMessage) {
-        console.log(onStartMessage);
-      } else {
-        console.log(
-          `🦉 Server is running on ${cyan("http://localhost:")}${cyan(port)}.`
-        );
-      }
-    });
+
+  listen(...args) {
+    this.server.listen(...args);
+    return this;
   }
 }
 
-module.exports = Enova;
+module.exports = (opts) => new Enova(opts);
